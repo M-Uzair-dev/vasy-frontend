@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.b {
+  border: 1px solid red;
+}
+#sidebar-items2::-webkit-scrollbar {
+  width: 0px;
+}
+
+#sidebar-items::-webkit-scrollbar {
+  width: 0px;
+}
+/* Track */
+#sidebar-items::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+/* Handle */
+#sidebar-items::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #0a72ea;
+}
+input:focus {
+  border-color: transparent;
+  box-shadow: none; /* Removes focus ring */
+  outline: none;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader-spinner {
+  width: 130px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 14px solid #0000;
+  border-right-color: #0a72ea;
+  position: relative;
+  animation: l24 1s infinite linear;
+}
+.loader-spinner:before,
+.loader-spinner:after {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: inherit;
+  animation: inherit;
+  animation-duration: 2s;
+}
+.loader-spinner:after {
+  animation-duration: 4s;
+}
+@keyframes l24 {
+  100% {
+    transform: rotate(1turn);
+  }
+}
