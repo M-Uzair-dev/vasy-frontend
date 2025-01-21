@@ -43,7 +43,7 @@ function SuperAdminlogin() {
         role: "admin",
       });
       if (res.status == 200) {
-        toastMessage("Welcome Super Admin !", "success");
+        toastMessage("Welcome Admin !", "success");
         localStorage.setItem("user", "admin");
         localStorage.setItem("token", res.data.token);
         setLoading(false);
