@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import useAxios from "./useAxios";
 const useApi = (method) => {
   const api = useAxios();
-
-  //   States
   const [response, setresponse] = useState(null);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState(null);

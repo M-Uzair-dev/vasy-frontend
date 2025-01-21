@@ -294,6 +294,7 @@ const appRoutes = [
 ];
 
 function App() {
+  console.log(import.meta.env.MODE);
   return (
     <Routes>
       <Route path="/" element={<RootLayout />}>
@@ -303,16 +304,16 @@ function App() {
             path={path}
             element={<RouteProtector element={element} userType={userType} />}
           />
-        ))}
+        ))}{" "}
+        <Route path="/superadmin-login" element={<SuperAdminlogin />} />
+        <Route path="/admin-login" element={<LoginAdmin />} />
+        <Route path="/resturant-login" element={<Restaurantlogin />} />
+        <Route path="/agent-login" element={<AgentLogin />} />
+        <Route path="/forgot-password" element={<LoginForget />} />
+        <Route path="/password-success" element={<LoginPasswordSuccess />} />
+        <Route path="/password-recover" element={<LoginRecovery />} />
+        <Route path="*" element={<Navigate to={"/"} />} />
       </Route>
-      <Route path="/superadmin-login" element={<SuperAdminlogin />} />
-      <Route path="/admin-login" element={<LoginAdmin />} />
-      <Route path="/resturant-login" element={<Restaurantlogin />} />
-      <Route path="/agent-login" element={<AgentLogin />} />
-      <Route path="/forgot-password" element={<LoginForget />} />
-      <Route path="/password-success" element={<LoginPasswordSuccess />} />
-      <Route path="/password-recover" element={<LoginRecovery />} />
-      <Route path="*" element={<Navigate to={"/"} />} />
     </Routes>
   );
 }

@@ -1,12 +1,17 @@
 import React, { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../components/SideBar/Sidebar";
 import NavBar from "../components/NavBar/NavBar";
 import useLocalUser from "../hooks/user/useLocalUser";
+import { setAuthToken } from "../api/useAxios";
 const RootLayout = () => {
   const user = useLocalUser();
+  const token = localStorage.getItem("token");
+  if (token) {
+    setAuthToken(token);
+  }
   useEffect(() => {
-    // Set the title of the document
+    
     if (user === "agent") {
       document.title = "Vasy - Agent Dashboard";
     }
