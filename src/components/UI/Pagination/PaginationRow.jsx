@@ -1,27 +1,92 @@
 import React from "react";
-
-const PaginationRow = () => {
+import { toastMessage } from "../../../components/UI/Toast/toastMessage";
+const PaginationRow = ({
+  dataPerPage,
+  page,
+  setPage,
+  setDataPerPage,
+  total,
+}) => {
   return (
     <div className="flex justify-between  p-8 items-center  text-[#666666] font-normal">
       <div className="flex justify-center items-center gap-4">
         <div>Showing off</div>
         <div>
           <label htmlFor=""></label>
-          <select name="25 " id="" className="rounded-lg h-10 cursor-pointer">
-            <option value="25">25</option>{" "}
-          </select>{" "}
+          <select
+            onChange={(e) => {
+              setDataPerPage(e.target.value);
+              setPage(1);
+            }}
+            value={dataPerPage}
+            className="rounded-lg h-10 cursor-pointer"
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            <option value="25">25</option>
+            <option value="30">30</option>
+            <option value="35">35</option>
+            <option value="40">40</option>
+          </select>
         </div>
         <div>items per page </div>
       </div>
       <div className="flex justify-start  gap-5 cursor-pointer">
+        {page > 1 && (
+          <div>
+            <button
+              onClick={() => {
+                setPage(page - 1);
+              }}
+            >
+              {page - 1}
+            </button>
+          </div>
+        )}
         <div className="border-2 border-[#666666] rounded-lg ">
-          <button className="px-3">1</button>
+          <button className="px-3">{page}</button>
         </div>
         <div>
-          <button>2</button>
+          <button
+            onClick={() => {
+              if (page == total) {
+                toastMessage("No more Users !", "error");
+                return;
+              }
+              setPage(page + 1);
+            }}
+          >
+            {page + 1}
+          </button>
+        </div>{" "}
+        <div
+          onClick={() => {
+            if (page == total) {
+              toastMessage("No more Users !", "error");
+              return;
+            }
+            setPage(page + 1);
+          }}
+        >
+          Next
         </div>
-        <div>Next </div>
-        <div>End</div>
+        <div
+          onClick={() => {
+            setPage(1);
+          }}
+        >
+          Start
+        </div>
+        {/* 4240176119133 */}
+        <div
+          onClick={() => {
+            setPage(total);
+          }}
+        >
+          End
+        </div>
       </div>
     </div>
   );

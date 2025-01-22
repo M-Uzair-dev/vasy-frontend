@@ -68,7 +68,7 @@ function CompleteUsers({ users }) {
                       className="w-5 h-5 cursor-pointer hover:scale-105 duration-200"
                     />
                     <PiNotePencil
-                      onClick={() => nav("/users/edit")}
+                      onClick={() => nav(`/users/edit/${value?._id}`)}
                       color="#069803"
                       className="w-5 h-5 cursor-pointer hover:scale-105 duration-200"
                     />

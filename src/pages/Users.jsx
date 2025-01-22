@@ -1,24 +1,59 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import DashBoardLayout from "../layout/DashBoardLayout";
 import CompleteUsers from "../components/TableforUsers/CompleteUsers";
 import PaginationRow from "../components/UI/Pagination/PaginationRow";
-import useApi from "../api/useApi";
 import LoaderSpinner from "../components/UI/Loaders/LoaderSpinner";
+import { toastMessage } from "../components/UI/Toast/toastMessage";
+import { api } from "../api/useAxios";
+import { useNavigate } from "react-router-dom";
 
 function Users() {
-  const { apiCall, response, loading } = useApi("GET");
+  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [page, setPage] = useState(1);
+  const [dataPerPage, setDataPerPage] = useState(5);
+  const [total, setTotal] = useState(0);
+  const navigate = useNavigate();
+
   useEffect(() => {
-    apiCall("/auth");
-  }, []);
-  const users = response?.data?.users?.filter((i) => i.userType === "Client");
+    let getAllUsers = async () => {
+      try {
+        setLoading(true);
+        const res = await api.post("/auth/clients", { dataPerPage, page });
+        console.log(res);
+        if ((res.status = 200)) {
+          setUsers(res.data.clients);
+          setTotal(res.data.total);
+          setLoading(false);
+        } else {
+          toastMessage(res.data.message || "Something went wrong", "error");
+          setLoading(false);
+          navigate("/");
+        }
+      } catch (e) {
+        toastMessage(e.data.message || "Something went wrong", "error");
+        setLoading(false);
+        navigate("/");
+      }
+    };
+    getAllUsers();
+    document.title = "Vasy - Users";
+  }, [page, dataPerPage]);
+
   if (loading) {
-    return <LoaderSpinner />;
+    return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
   }
   return (
     <>
       <DashBoardLayout heading={"Users"} showSearch>
         <CompleteUsers users={users} />
-        <PaginationRow />
+        <PaginationRow
+          dataPerPage={dataPerPage}
+          page={page}
+          setPage={setPage}
+          setDataPerPage={setDataPerPage}
+          total={total}
+        />
         <div className="mt-20"></div>
       </DashBoardLayout>
     </>
@@ -26,17 +61,3 @@ function Users() {
 }
 
 export default Users;
-const check = {
-  _id: "6711236ec462a032f2e6d424",
-  email: "jerowab303@advitize.com",
-  password: "$2b$10$V01NdwL.Yl7gwTF6ZE/XWOMRF6VgjIxuali4XqQXiHX5f1me.edQi",
-  role: "client",
-  userType: "Client",
-  firstName: "John",
-  lastName: "Doe",
-  image: "https://example.com/images/john_doe.jpg",
-  mobileNumber: "03001234567",
-  createdAt: "2024-10-17T14:47:10.378Z",
-  updatedAt: "2024-10-17T14:47:10.378Z",
-  __v: 0,
-};

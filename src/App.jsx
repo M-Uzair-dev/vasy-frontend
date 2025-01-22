@@ -67,7 +67,7 @@ const appRoutes = [
   },
   { path: "/users", element: <Users />, userType: ["super-admin", "admin"] },
   {
-    path: "/users/edit",
+    path: "/users/edit/:userId",
     element: <EditUser />,
     userType: ["super-admin", "admin"],
   },

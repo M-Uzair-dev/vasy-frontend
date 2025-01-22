@@ -6,12 +6,18 @@ const ImageUploader = ({
   placeholder = "Select Images",
   selectedImages,
   setSelectedImages,
+  maxImages = 10,
 }) => {
   // const [selectedImages, setSelectedImages] = useState([]);
   const fileInputRef = useRef(null);
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     const newImages = files.map((file) => URL.createObjectURL(file));
+    if (selectedImages.length == maxImages) return;
+    if (selectedImages.length + newImages.length > maxImages) {
+      const remainingImages = maxImages - selectedImages.length;
+      newImages.splice(remainingImages);
+    }
     setSelectedImages((prevImages) => [...prevImages, ...newImages]);
   };
 
