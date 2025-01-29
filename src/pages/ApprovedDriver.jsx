@@ -7,8 +7,7 @@ function ApprovedDriver() {
   return (
     <div>
       <DashBoardLayout heading={"Approved Drivers"} showSearch>
-        <Generaldetails />
-        <PaginationRow />
+        <Generaldetails approved />
         <div className="mb-10"></div>
       </DashBoardLayout>
     </div>

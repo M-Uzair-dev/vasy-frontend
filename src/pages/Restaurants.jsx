@@ -3,11 +3,41 @@ import DashBoardLayout from "../layout/DashBoardLayout";
 // import CompleteUsers from '../components/TableforUsers/CompleteUsers'
 import Generaldetails from "../components/Restaurantdetails/Generaldetails";
 import OrderDetails from "../components/Restaurantdetails/OrderDetails";
+import { api } from "../api/useAxios";
+import { toastMessage } from "../components/UI/Toast/toastMessage";
+import LoaderSpinner from "../components/UI/Loaders/LoaderSpinner";
+import { useNavigate } from "react-router-dom";
 
 function Restaurants() {
   const tabs = ["General details", "Order details"];
   const [selectedTab, setselectedTab] = useState("General details");
+  const [loading, setLoading] = useState(true);
+  const [restaurants, setRestaurants] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    let getData = async () => {
+      try {
+        const res = await api.get("/restaurant//orders");
+        if ((res.status = 200)) {
+          setRestaurants(res.data.restaurants);
+          setOrders(res.data.orders);
+          setLoading(false);
+        } else {
+          toastMessage(res.data.message || "Something went wrong", "error");
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
+
+  if (loading) {
+    return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
+  }
   return (
     <>
       <div>
@@ -23,9 +53,9 @@ function Restaurants() {
             ))}
           </div>
           {selectedTab === "General details" ? (
-            <Generaldetails />
+            <Generaldetails restaurants={restaurants} />
           ) : (
-            <OrderDetails />
+            <OrderDetails orders={orders} />
           )}
 
           <div className="mt-20"></div>

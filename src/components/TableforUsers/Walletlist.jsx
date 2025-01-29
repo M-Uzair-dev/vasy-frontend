@@ -1,7 +1,34 @@
 import React from "react";
 import { Table } from "flowbite-react";
 import { Wallet } from "../../data/routes";
-function Walletlist() {
+function Walletlist({ transactions }) {
+  function formatDate(isoDateString) {
+    const date = new Date(isoDateString); // Parse the ISO date string
+
+    // Define an array of month names
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    // Get the components for the formatted date
+    const month = monthNames[date.getUTCMonth()];
+    const day = date.getUTCDate();
+    const year = date.getUTCFullYear();
+
+    // Return the formatted date as a string
+    return `${month} ${day}, ${year}`;
+  }
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -13,23 +40,29 @@ function Walletlist() {
           <Table.HeadCell>NOTE</Table.HeadCell>
           <Table.HeadCell>TOTAL AMOUNT</Table.HeadCell>
         </Table.Head>
-        <Table.Body className="divide-y">
-          {Wallet.map((value, index) => {
-            return (
-              <Table.Row
-                className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                key={index}
-              >
-                <Table.Cell>{value.id}</Table.Cell>
-                <Table.Cell>CASH</Table.Cell>
-                <Table.Cell>1454254254524</Table.Cell>
-                <Table.Cell>DEC,30,2024</Table.Cell>
-                <Table.Cell>--</Table.Cell>
-                <Table.Cell>$350.00</Table.Cell>
-              </Table.Row>
-            );
-          })}
-        </Table.Body>
+        {transactions.length > 0 ? (
+          <Table.Body className="divide-y">
+            {transactions.map((value, index) => {
+              return (
+                <Table.Row
+                  className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                  key={index}
+                >
+                  <Table.Cell>
+                    {value._id.slice(value._id.length - 9)}
+                  </Table.Cell>
+                  <Table.Cell>{value.method}</Table.Cell>
+                  <Table.Cell>{value.TxnId}</Table.Cell>
+                  <Table.Cell>{formatDate(value.createdAt)}</Table.Cell>
+                  <Table.Cell>{value.note}</Table.Cell>
+                  <Table.Cell>$ {value.amount}</Table.Cell>
+                </Table.Row>
+              );
+            })}
+          </Table.Body>
+        ) : (
+          <p>No transactions</p>
+        )}
       </Table>
 
       <div className="mb-16"></div>

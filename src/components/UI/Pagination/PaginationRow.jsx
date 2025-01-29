@@ -6,6 +6,10 @@ const PaginationRow = ({
   setPage,
   setDataPerPage,
   total,
+  setPrevPages,
+  prevPages,
+  data,
+  endMessage,
 }) => {
   return (
     <div className="flex justify-between  p-8 items-center  text-[#666666] font-normal">
@@ -17,6 +21,7 @@ const PaginationRow = ({
             onChange={(e) => {
               setDataPerPage(e.target.value);
               setPage(1);
+              setPrevPages({});
             }}
             value={dataPerPage}
             className="rounded-lg h-10 cursor-pointer"
@@ -39,6 +44,10 @@ const PaginationRow = ({
             <button
               onClick={() => {
                 setPage(page - 1);
+                setPrevPages({
+                  ...prevPages,
+                  [page]: [data],
+                });
               }}
             >
               {page - 1}
@@ -52,10 +61,14 @@ const PaginationRow = ({
           <button
             onClick={() => {
               if (page == total) {
-                toastMessage("No more Users !", "error");
+                toastMessage(endMessage, "error");
                 return;
               }
               setPage(page + 1);
+              setPrevPages({
+                ...prevPages,
+                [page]: [data],
+              });
             }}
           >
             {page + 1}
@@ -64,10 +77,14 @@ const PaginationRow = ({
         <div
           onClick={() => {
             if (page == total) {
-              toastMessage("No more Users !", "error");
+              toastMessage(endMessage, "error");
               return;
             }
             setPage(page + 1);
+            setPrevPages({
+              ...prevPages,
+              [page]: [data],
+            });
           }}
         >
           Next
@@ -75,6 +92,10 @@ const PaginationRow = ({
         <div
           onClick={() => {
             setPage(1);
+            setPrevPages({
+              ...prevPages,
+              [page]: [data],
+            });
           }}
         >
           Start
@@ -83,6 +104,10 @@ const PaginationRow = ({
         <div
           onClick={() => {
             setPage(total);
+            setPrevPages({
+              ...prevPages,
+              [page]: [data],
+            });
           }}
         >
           End

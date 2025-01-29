@@ -1,35 +1,54 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Table } from "flowbite-react";
-import { Generaldetail } from "../../data/routes";
-import Formimg from "../../assets/Formimg.png";
-import Formtoggle from "../../assets/Formtoggle.png";
 import { HiOutlineEye } from "react-icons/hi2";
 import { PiNotePencil } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Checkbox } from "flowbite-react";
-import { BiSolidToggleRight } from "react-icons/bi";
-
-import { ToggleSwitch } from "flowbite-react";
 import { useState } from "react";
 import CustomSwitch from "../UI/Switchs/CustomSwitch";
 import DeleteModal from "../UI/Modals/DeleteModal";
-import useApi from "../../api/useApi";
-import LoaderSpinner from "../UI/Loaders/LoaderSpinner";
-function Generaldetails() {
+import { toastMessage } from "../UI/Toast/toastMessage";
+import { api } from "../../api/useAxios";
+
+function Generaldetails({ restaurants }) {
   const [open, setopen] = useState(false);
-  const [switch2, setSwitch2] = useState(true);
+  const [deleting, setDeleting] = useState("");
+  const [deleted, setDeleted] = useState([]);
   const nav = useNavigate();
-  const { apiCall, response, loading } = useApi("GET");
-  useEffect(() => {
-    apiCall("/restaurant");
-  }, []);
-  if (loading) {
-    return <LoaderSpinner />;
-  }
+
+  const deleteRestaurant = async () => {
+    try {
+      const response = await api.delete(`/restaurant?id=${deleting}`);
+      console.log(response);
+      if (response.status == 200) {
+        toastMessage("Restaurant deleted successfully !", "success");
+        setDeleted([...deleted, deleting]);
+        setopen(false);
+        setDeleting("");
+      } else {
+        toastMessage(
+          response.data.message || "Something went wrong !",
+          "error"
+        );
+        setopen(false);
+        setDeleting("");
+      }
+    } catch (e) {
+      toastMessage(e.data.message || "Something went wrong !", "error");
+      setopen(false);
+      setDeleting("");
+    }
+  };
   return (
     <div className="overflow-x-auto">
-      {open && <DeleteModal setDeleteModal={setopen} deleteModal={open} />}
+      {open && (
+        <DeleteModal
+          setDeleteModal={setopen}
+          handleDeleteClick={deleteRestaurant}
+          deleteModal={open}
+        />
+      )}
       <Table>
         <Table.Head className="text-xs font-medium">
           <Table.HeadCell>
@@ -44,12 +63,15 @@ function Generaldetails() {
           <Table.HeadCell>ACTIONS</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y text-dark text-sm font-medium">
-          {response?.data?.restaurants?.map((value, index) => {
+          {restaurants?.map((value, index) => {
             return (
               <>
                 <Table.Row
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
                   key={index}
+                  style={
+                    deleted.includes(value?._id) ? { display: "none" } : {}
+                  }
                 >
                   <Table.Cell>
                     <Checkbox />
@@ -78,7 +100,10 @@ function Generaldetails() {
                         }
                       />
                       <RiDeleteBin6Line
-                        onClick={() => setopen(true)}
+                        onClick={() => {
+                          setDeleting(value._id);
+                          setopen(true);
+                        }}
                         color="#FF3636"
                         className="w-5 h-5 cursor-pointer hover:scale-105 duration-200"
                       />

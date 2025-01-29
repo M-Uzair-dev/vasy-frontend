@@ -13,12 +13,19 @@ function Users() {
   const [page, setPage] = useState(1);
   const [dataPerPage, setDataPerPage] = useState(5);
   const [total, setTotal] = useState(0);
+  const [prevpages, setPrevPages] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     let getAllUsers = async () => {
       try {
+        console.log(prevpages[page]);
+        if (prevpages[page]) {
+          setUsers(prevpages[page][0]);
+          return;
+        }
         setLoading(true);
+
         const res = await api.post("/auth/clients", { dataPerPage, page });
         console.log(res);
         if ((res.status = 200)) {
@@ -53,6 +60,10 @@ function Users() {
           setPage={setPage}
           setDataPerPage={setDataPerPage}
           total={total}
+          setPrevPages={setPrevPages}
+          prevPages={prevpages}
+          data={users}
+          endMessage={"No More Users !"}
         />
         <div className="mt-20"></div>
       </DashBoardLayout>

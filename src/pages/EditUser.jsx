@@ -12,7 +12,6 @@ import { api } from "../api/useAxios";
 const EditUser = () => {
   const nav = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [selected, setselected] = useState("");
   const [selectedImages, setselectedImages] = useState([]);
   const [userInfo, setUserInfo] = useState({
     firstName: "",
@@ -21,6 +20,7 @@ const EditUser = () => {
     mobileNumber: "",
     email: "",
   });
+  const [uploading, setUploading] = useState(false);
   const { userId: id } = useParams();
   const navigate = useNavigate();
   const getUserInfo = async () => {
@@ -59,20 +59,62 @@ const EditUser = () => {
     getUserInfo();
   }, []);
 
-  const handleChange = (e) => {
-    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+  const uploadFile = async () => {
+    const data = new FormData();
+    data.append("file", selectedImages[0]);
+    data.append("upload_preset", "thoughtsArea");
+    data.append("cloud_name", "dexeo4ce2");
+
+    setUploading(true);
+    try {
+      let answer = await fetch(
+        "https://api.cloudinary.com/v1_1/dexeo4ce2/image/upload",
+        {
+          method: "post",
+          body: data,
+        }
+      );
+      let value = await answer.json();
+      return value.url;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const updateProfile = async () => {
     try {
-      if (selectedImages.length > 0) {
-        setUserInfo({ ...userInfo, image: selectedImages[0] });
+      if (selectedImages.length == 0) {
+        toastMessage("Image is required !", "error");
+        setLoading(false);
+        return;
       }
-      const response = await api.put(`/client?id=${id}`);
+      if (selectedImages[0] !== userInfo.image) {
+        const url = await uploadFile();
+        if (!url) {
+          toastMessage(
+            "Something went wrong while uploading the image !",
+            "error"
+          );
+          return;
+        }
+        setUserInfo({ ...userInfo, image: url });
+      }
+      const response = await api.put(`/client?id=${id}`, userInfo);
+      if (response.status == 200) {
+        toastMessage("User updated successfully !", "success");
+        setLoading(false);
+      } else {
+        toastMessage(
+          response.data.message || "Something went wrong !",
+          "error"
+        );
+        setLoading(false);
+      }
     } catch (e) {
       toastMessage(e.data.message || "Something went wrong !", "error");
       setLoading(false);
-      navigate("/");
     }
   };
   if (loading) {
@@ -87,37 +129,45 @@ const EditUser = () => {
             placeholder="Enter Name"
             name="firstName"
             value={userInfo?.firstName || ""}
-            onChange={handleChange}
+            onChange={(event) => {
+              setUserInfo({ ...userInfo, firstName: event.target.value });
+            }}
           />
           <CustomInput
             label={"Last Name"}
             placeholder="Enter Name"
             name="lastName"
             value={userInfo?.lastName || ""}
-            onChange={handleChange}
+            onChange={() => {
+              setUserInfo({ ...userInfo, lastName: event.target.value });
+            }}
           />
           <CustomInput
             label={"Email"}
             placeholder="Enter Email"
             name="email"
             value={userInfo?.email || ""}
-            onChange={handleChange}
-          />
-          <CustomInput
-            label={"Phone no "}
-            placeholder="Enter Phone no"
-            name="mobileNumber"
-            value={userInfo?.mobileNumber || ""}
-            onChange={handleChange}
+            onChange={() => {
+              setUserInfo({ ...userInfo, email: event.target.value });
+            }}
           />
         </div>
         <div className="flex justify-start w-[66%] gap-5">
-          <CustomSelect
+          {/* <CustomSelect
             selected={selected}
             setselected={setselected}
             options={options}
             label={"Country Code"}
             placeholder="Select Country Code"
+          /> */}{" "}
+          <CustomInput
+            label={"Phone no "}
+            placeholder="Enter Phone no"
+            name="mobileNumber"
+            value={userInfo?.mobileNumber || ""}
+            onChange={() => {
+              setUserInfo({ ...userInfo, mobileNumber: event.target.value });
+            }}
           />
           <ImageUploader
             selectedImages={selectedImages}
@@ -129,7 +179,16 @@ const EditUser = () => {
 
         <div className="flex gap-4 w-full h-full items-end justify-end">
           <Button title="Back" onclick={() => nav(-1)} outline />
-          <Button title="Save" onclick={() => console.log(selectedImages)} />
+          <Button
+            title={
+              uploading ? "Uploading image..." : loading ? "Saving..." : "Save"
+            }
+            onclick={() => {
+              if (!loading && !uploading) {
+                updateProfile();
+              }
+            }}
+          />
         </div>
       </form>
     </DashBoardLayout>

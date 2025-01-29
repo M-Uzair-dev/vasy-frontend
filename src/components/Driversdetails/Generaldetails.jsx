@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "flowbite-react";
 import Formimg from "../../assets/Formimg.png";
 import Formtoggle from "../../assets/Formtoggle.png";
@@ -10,76 +10,110 @@ import { useNavigate } from "react-router-dom";
 import { Checkbox } from "flowbite-react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DeleteModal from "../UI/Modals/DeleteModal";
-function Generaldetails() {
+import useApi from "../../api/useApi";
+import LoaderSpinner from "../UI/Loaders/LoaderSpinner";
+import PaginationRow from "../UI/Pagination/PaginationRow";
+function Generaldetails({ approved, pending }) {
   const [open, setopen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [dataPerPage, setDataPerPage] = useState(5);
+  const { apiCall, response, loading } = useApi("GET");
   const nav = useNavigate();
+
+  useEffect(() => {
+    if (approved) {
+      apiCall(`/driver?approved=true&page=${page}&data=${dataPerPage}`);
+    } else if (pending) {
+      apiCall(`/driver?pending=true&page=${page}&data=${dataPerPage}`);
+    } else {
+      apiCall(`/driver?page=${page}&data=${dataPerPage}`);
+    }
+  }, [dataPerPage, page]);
+
+  if (loading) {
+    return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
+  }
   return (
-    <div className="overflow-x-auto">
-      {open && <DeleteModal setDeleteModal={setopen} deleteModal={open} />}
-      <Table>
-        <Table.Head className="text-xs text-[#84919A]">
-          <Table.HeadCell>
-            <Checkbox />
-          </Table.HeadCell>
-          <Table.HeadCell>Image</Table.HeadCell>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>Email</Table.HeadCell>
-          <Table.HeadCell>Phone</Table.HeadCell>
-          <Table.HeadCell>Documents</Table.HeadCell>
-          <Table.HeadCell>Date</Table.HeadCell>
-          <Table.HeadCell>service</Table.HeadCell>
-          <Table.HeadCell>Vehicle types</Table.HeadCell>
-          <Table.HeadCell>Total rides</Table.HeadCell>
-          <Table.HeadCell>Actions</Table.HeadCell>
-        </Table.Head>
-        <Table.Body className="divide-y border-[#F9FAFB] ">
-          {Users.map((value, index) => {
-            return (
-              <Table.Row
-                key={index}
-                className="bg-white dark:border-gray-700 dark:bg-gray-800"
-              >
-                <Table.Cell>
-                  <Checkbox />
-                </Table.Cell>
-                <Table.Cell>
-                  <img src={Formimg} alt="" />
-                </Table.Cell>
-                <Table.Cell>{value.name}</Table.Cell>
-                <Table.Cell>Usermail</Table.Cell>
-                <Table.Cell>+989898989</Table.Cell>
-                <Table.Cell>
-                  <img src={Documenticon} alt="" />
-                </Table.Cell>
-                <Table.Cell>Dec,30,2024</Table.Cell>
-                <Table.Cell> Car </Table.Cell>
-                <Table.Cell>SUV</Table.Cell>
-                <Table.Cell>23</Table.Cell>
-                <Table.Cell>
-                  <div className="flex justify-start items-center gap-3">
-                    <HiOutlineEye
-                      color="#000000"
-                      className="w-5 h-7 cursor-pointer hover:scale-105 duration-200"
-                      onClick={() => nav("/drivers/view")}
-                    />
-                    <RiDeleteBin6Line
-                     onClick={() => setopen(true)}
-                      color="#FF3636"
-                      className="w-5 h-7 cursor-pointer hover:scale-105 duration-200"
-                    />
-                    <PiNotePencil
-                      onClick={() => nav("/drivers/edit")}
-                      color="#069803"
-                      className="w-5 h-7 cursor-pointer hover:scale-105 duration-200"
-                    />
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
-        </Table.Body>
-      </Table>
-    </div>
+    <>
+      <div className="overflow-x-auto">
+        {open && <DeleteModal setDeleteModal={setopen} deleteModal={open} />}
+
+        <Table>
+          <Table.Head className="text-xs text-[#84919A]">
+            <Table.HeadCell>
+              <Checkbox />
+            </Table.HeadCell>
+            <Table.HeadCell>Image</Table.HeadCell>
+            <Table.HeadCell>Name</Table.HeadCell>
+            <Table.HeadCell>Email</Table.HeadCell>
+            <Table.HeadCell>Phone</Table.HeadCell>
+            <Table.HeadCell>Documents</Table.HeadCell>
+            <Table.HeadCell>Date</Table.HeadCell>
+            <Table.HeadCell>service</Table.HeadCell>
+            <Table.HeadCell>Vehicle types</Table.HeadCell>
+            <Table.HeadCell>Total rides</Table.HeadCell>
+            <Table.HeadCell>Actions</Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y border-[#F9FAFB] ">
+            {response?.data?.drivers?.map((value, index) => {
+              return (
+                <Table.Row
+                  key={index}
+                  className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                >
+                  <Table.Cell>
+                    <Checkbox />
+                  </Table.Cell>
+                  <Table.Cell>
+                    <img src={value?.image} alt="" />
+                  </Table.Cell>
+                  <Table.Cell>
+                    {value?.firstName + " " + value?.lastName}
+                  </Table.Cell>
+                  <Table.Cell>{value?.email}</Table.Cell>
+                  <Table.Cell>{value?.mobileNumber}</Table.Cell>
+                  <Table.Cell>
+                    <img src={Documenticon} alt="" />
+                  </Table.Cell>
+                  <Table.Cell>Dec,30,2024</Table.Cell>
+                  <Table.Cell>{value?.role}</Table.Cell>
+                  <Table.Cell>{value?.vehicle?.name}</Table.Cell>
+                  <Table.Cell>{value?.rides}</Table.Cell>
+                  <Table.Cell>
+                    <div className="flex justify-start items-center gap-3">
+                      <HiOutlineEye
+                        color="#000000"
+                        className="w-5 h-7 cursor-pointer hover:scale-105 duration-200"
+                        onClick={() => nav(`/drivers/view/${value._id}`)}
+                      />
+                      <RiDeleteBin6Line
+                        onClick={() => setopen(true)}
+                        color="#FF3636"
+                        className="w-5 h-7 cursor-pointer hover:scale-105 duration-200"
+                      />
+                      <PiNotePencil
+                        onClick={() => nav(`/drivers/edit/${value._id}`)}
+                        color="#069803"
+                        className="w-5 h-7 cursor-pointer hover:scale-105 duration-200"
+                      />
+                    </div>
+                  </Table.Cell>
+                </Table.Row>
+              );
+            })}
+          </Table.Body>
+        </Table>
+      </div>
+
+      <PaginationRow
+        dataPerPage={dataPerPage}
+        page={page}
+        setPage={setPage}
+        setDataPerPage={setDataPerPage}
+        total={response?.data?.total}
+        endMessage={"No More Drivers !"}
+      />
+    </>
   );
 }
 

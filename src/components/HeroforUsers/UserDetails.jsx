@@ -3,7 +3,7 @@ import UserDetailspic from "../../assets/heropic.png";
 import Button from "../button/Button";
 import AddAmountModal from "../UI/Modals/AddAmountModal";
 
-function UserDetails() {
+function UserDetails({ user }) {
   const [open, setopen] = useState(false);
   return (
     <>
@@ -11,12 +11,23 @@ function UserDetails() {
       <div className="flex justify-between bg-[#EDF2F7] px-5 py-6 items-center rounded-md">
         <div className="flex justify-start items-center gap-5">
           <div className="">
-            <img src={UserDetailspic} alt="" />
+            <img
+              src={user.image}
+              alt=""
+              style={{
+                width: "100px",
+                height: "100px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
           </div>
           <div className=" space-y-2">
-            <h1 className="text-secondary text-2xl font-bold">kumawat mamta</h1>
-            <p>kumawatmamta@gmail.com</p>
-            <p>+92345678967</p>
+            <h1 className="text-secondary text-2xl font-bold">
+              {user.firstName + " " + user.lastName}
+            </h1>
+            <p>{user.email}</p>
+            <p>{user.mobileNumber}</p>
           </div>
         </div>
         <div>

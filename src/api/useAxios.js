@@ -1,12 +1,17 @@
 import axios from "axios";
 
-
 const useAxios = () => {
   const token = localStorage.getItem("token");
-  let url = import.meta.env.MODE == "development" ? "http://localhost:8080" : "https://backend-vasy.vercel.app/"
+  let url =
+    import.meta.env.MODE == "development"
+      ? "http://localhost:8080"
+      : "https://backend-vasy.vercel.app/";
 
   const api = axios.create({
-    baseURL: "https://vasy-y.vercel.app",
+    baseURL:
+      import.meta.env.MODE == "development"
+        ? "http://localhost:8080"
+        : "https://vasy-y.vercel.app",
   });
   // Automatically Set Token into Header.
   if (token) {
@@ -19,10 +24,15 @@ const useAxios = () => {
 
 export default useAxios;
 
-let url =  import.meta.env.MODE == "development" ? "http://localhost:8080" : "https://backend-vasy.vercel.app/"
+let url =
+  import.meta.env.MODE == "development"
+    ? "http://localhost:8080"
+    : "https://backend-vasy.vercel.app/";
 const api = axios.create({
   baseURL: url,
 });
+
+console.log(import.meta.env.MODE, url);
 
 const setAuthToken = (token) => {
   if (token) {

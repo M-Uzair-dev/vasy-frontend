@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashBoardLayout from "../layout/DashBoardLayout";
 import heropic from "../assets/heropic.png";
 import star from "../assets/star.png";
@@ -7,10 +7,19 @@ import Walletlist from "../components/TableforUsers/Walletlist";
 import Payouttable from "../components/Payouttables/Payouttable";
 import Button from "../components/button/Button";
 import AddAmountModal from "../components/UI/Modals/AddAmountModal";
+import { useParams } from "react-router-dom";
+import useApi from "../api/useApi";
 function ViewDriver() {
   const tabs = ["Ride List", "Wallet Transactions", "Payouts Requests"];
   const [selectedTab, setselectedTab] = useState("Ride List");
   const [open, setopen] = useState(false);
+  const { id } = useParams();
+  const { apiCall, response, loading } = useApi("GET");
+
+  useEffect(() => {
+    apiCall(`/driver/${id}`);
+  }, []);
+
   return (
     <>
       {open && <AddAmountModal openModal={open} setOpenModal={setopen} />}
@@ -50,7 +59,7 @@ function ViewDriver() {
             </div>
           </div>
 
-          <div className=" p-6 border-b-2 ">
+          {/* <div className=" p-6 border-b-2 ">
             <h1 className="text-[18px] font-[700] text-[#1B3B5F] ">
               Vehicle Information
             </h1>
@@ -66,7 +75,7 @@ function ViewDriver() {
               <div>LOZ-123</div>
               <div>SUV</div>
             </div>
-          </div>
+          </div> */}
 
           <div className=" p-6">
             <h1 className="text-[18px] font-[700] text-[#1B3B5F]">

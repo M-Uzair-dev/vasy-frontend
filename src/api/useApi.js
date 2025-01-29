@@ -15,6 +15,8 @@ const useApi = (method) => {
     setloading(true);
     try {
       const res = await api.request({ ...options, url, data });
+
+      console.log(res);
       setresponse(res);
       setloading(false);
       return res;

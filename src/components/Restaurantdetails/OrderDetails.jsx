@@ -5,8 +5,9 @@ import { HiOutlineEye } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 import { Checkbox } from "flowbite-react";
 import CustomBadge from "../../components/UI/Badges/CustomBadge";
-function OrderDetails() {
+function OrderDetails({ orders }) {
   const nav = useNavigate();
+  console.log(orders);
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -26,7 +27,7 @@ function OrderDetails() {
           <Table.HeadCell>ACTIONS</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y  text-dark text-sm font-medium">
-          {Orderdetails.map((value, index) => {
+          {orders?.map((value, index) => {
             return (
               <>
                 <Table.Row
@@ -36,11 +37,26 @@ function OrderDetails() {
                   <Table.Cell>
                     <Checkbox />{" "}
                   </Table.Cell>
-                  <Table.Cell>133434 </Table.Cell>
-                  <Table.Cell>Restaurant name</Table.Cell>
-                  <Table.Cell>$400.00</Table.Cell>
                   <Table.Cell>
-                    <CustomBadge text="Completed" type="success" />
+                    {value._id.slice(value._id.length - 9)}
+                  </Table.Cell>
+                  <Table.Cell>{value.restaurantId.fullName}</Table.Cell>
+                  <Table.Cell>${value.totalPrice}</Table.Cell>
+                  <Table.Cell>
+                    <CustomBadge
+                      text={value.status}
+                      type={
+                        value.status == "pending" ||
+                        value.status == "confirmed" ||
+                        value.status == "preparing"
+                          ? "info"
+                          : value.status == "delivered"
+                          ? "success"
+                          : value.status == "cancelled"
+                          ? "danger"
+                          : "warning"
+                      }
+                    />
                   </Table.Cell>
                   <Table.Cell> </Table.Cell>
                   <Table.Cell> </Table.Cell>
@@ -50,7 +66,7 @@ function OrderDetails() {
                     <HiOutlineEye
                       color="#000000"
                       className="w-7 h-7 cursor-pointer hover:scale-105 duration-200"
-                      onClick={() => nav("/resturants/Order")}
+                      onClick={() => nav(`/resturants/Order/${value._id}`)}
                     />
                   </Table.Cell>
                 </Table.Row>

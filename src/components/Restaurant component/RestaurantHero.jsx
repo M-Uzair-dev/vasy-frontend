@@ -24,16 +24,42 @@ function RestaurantHero() {
     fetchAnotherData(`/order/status/${id}`);
   }, [id]);
   if (loadingRestaurant || loadingAnotherData) {
-    return <LoaderSpinner />;
+    return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
   }
+
+  const getAverage = (array) => {
+    if (!Array.isArray(array) || array.length === 0) {
+      return 0;
+    }
+
+    const totalRating = array.reduce(
+      (sum, item) => sum + (item.rating || 0),
+      0
+    );
+    const average = totalRating / array.length;
+
+    return Math.round(average * 10) / 10;
+  };
   return (
     <DashBoardLayout heading={"View Details"} showSearch>
       <div className="bg-[#EDF2F7]  rounded-xl ">
         <div className="py-6">
           <div className="flex flex-col">
             <div className="flex gap-4 border-b-2 px-6 py-4 items-center ">
-              <div>
-                <img src={heropic} alt="img" />
+              <div
+                onClick={() => {
+                  console.log(restaurantResponse?.data?.ratings);
+                }}
+              >
+                <img
+                  style={{
+                    height: "100px",
+                    width: "100px",
+                    borderRadius: "50%",
+                  }}
+                  src={restaurantResponse?.data?.restaurant?.image || heropic}
+                  alt="img"
+                />
               </div>
               <div className="flex flex-col gap-2 ">
                 <div className="flex gap-2 items-center">
@@ -41,7 +67,11 @@ function RestaurantHero() {
                     {restaurantResponse?.data?.restaurant?.fullName}
                   </h1>
                   <img src={star} alt="" className="h-4" />
-                  <span>(3.0)</span>
+                  <span>
+                    {restaurantResponse?.data?.ratings?.length > 0
+                      ? getAverage(restaurantResponse?.data?.ratings)
+                      : "0"}
+                  </span>
                 </div>
                 <div>
                   <h1 className="text-[16px] font-[500] text-[#737373]">
@@ -64,10 +94,19 @@ function RestaurantHero() {
                 <div>Orders Cancelled</div>
               </div>
               <div className="flex items-center justify-start gap-56 text-sm font-medium pt-3 text-[#737373]">
-                <div>3456</div>
-                <div>45</div>
-                <div>56</div>
-                <div>8</div>
+                <div>
+                  {restaurantResponse?.data?.orderStats[0]?.totalOrders || 0}
+                </div>
+                <div>
+                  {restaurantResponse?.data?.orderStats[0]?.pendingOrders || 0}
+                </div>
+                <div>
+                  {restaurantResponse?.data?.orderStats[0]?.activeOrders || 0}
+                </div>
+                <div>
+                  {restaurantResponse?.data?.orderStats[0]?.cancelledOrders ||
+                    0}
+                </div>
               </div>
             </div>
           </div>

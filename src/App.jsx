@@ -72,7 +72,7 @@ const appRoutes = [
     userType: ["super-admin", "admin"],
   },
   {
-    path: "/users/view",
+    path: "/users/view/:userId",
     element: <ViewUserDetails />,
     userType: ["super-admin", "admin"],
   },
@@ -103,7 +103,7 @@ const appRoutes = [
     userType: ["super-admin", "admin"],
   },
   {
-    path: "/resturants/Order",
+    path: "/resturants/Order/:id",
     element: <Orderdetailshero />,
     userType: ["super-admin", "admin"],
   },
@@ -123,12 +123,12 @@ const appRoutes = [
     userType: ["super-admin", "admin"],
   },
   {
-    path: "/drivers/view",
+    path: "/drivers/view/:id",
     element: <ViewDriver />,
     userType: ["super-admin", "admin"],
   },
   {
-    path: "/drivers/edit",
+    path: "/drivers/edit/:id",
     element: <EditDriversdetails />,
     userType: ["super-admin", "admin"],
   },
