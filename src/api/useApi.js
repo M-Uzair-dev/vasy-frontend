@@ -1,24 +1,38 @@
-import React, { useState } from "react";
-import useAxios from "./useAxios";
-const useApi = (method) => {
+import axios from "axios";
+import { useState } from "react";
+
+const useAxios = () => {
+  const token = localStorage.getItem("token");
+
+  const api = axios.create({
+    baseURL:
+      import.meta.env.MODE == "development"
+        ? "http://localhost:8080"
+        : "https://vasy-y.vercel.app",
+  });
+  if (token) {
+    api.defaults.headers.common["authorization"] = `${token}`;
+  }
+  return api;
+};
+
+const useApi = (method, callBack) => {
   const api = useAxios();
   const [response, setresponse] = useState(null);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState(null);
-  //   Axios Api Call Configuration
+
   const options = {
     method,
   };
 
-  //   Api Call Function
   const apiCall = async (url, data) => {
     setloading(true);
     try {
       const res = await api.request({ ...options, url, data });
-
-      console.log(res);
       setresponse(res);
       setloading(false);
+      if (callBack) callBack(res.data);
       return res;
     } catch (e) {
       console.log(e);

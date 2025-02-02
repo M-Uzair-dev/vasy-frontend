@@ -8,6 +8,7 @@ import ImageUploader from "../components/UI/Inputs/ImageInput";
 import { toastMessage } from "../components/UI/Toast/toastMessage";
 import LoaderSpinner from "../components/UI/Loaders/LoaderSpinner";
 import { api } from "../api/useAxios";
+import uploadImage from "../api/uploadImage";
 
 const EditUser = () => {
   const nav = useNavigate();
@@ -59,30 +60,6 @@ const EditUser = () => {
     getUserInfo();
   }, []);
 
-  const uploadFile = async () => {
-    const data = new FormData();
-    data.append("file", selectedImages[0]);
-    data.append("upload_preset", "thoughtsArea");
-    data.append("cloud_name", "dexeo4ce2");
-
-    setUploading(true);
-    try {
-      let answer = await fetch(
-        "https://api.cloudinary.com/v1_1/dexeo4ce2/image/upload",
-        {
-          method: "post",
-          body: data,
-        }
-      );
-      let value = await answer.json();
-      return value.url;
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setUploading(false);
-    }
-  };
-
   const updateProfile = async () => {
     try {
       if (selectedImages.length == 0) {
@@ -90,8 +67,9 @@ const EditUser = () => {
         setLoading(false);
         return;
       }
+      let url;
       if (selectedImages[0] !== userInfo.image) {
-        const url = await uploadFile();
+        url = await uploadImage(selectedImages[0], setUploading);
         if (!url) {
           toastMessage(
             "Something went wrong while uploading the image !",
@@ -99,9 +77,17 @@ const EditUser = () => {
           );
           return;
         }
-        setUserInfo({ ...userInfo, image: url });
       }
-      const response = await api.put(`/client?id=${id}`, userInfo);
+      let response;
+
+      if (url) {
+        response = await api.put(`/client?id=${id}`, {
+          ...userInfo,
+          image: url,
+        });
+      } else {
+        response = await api.put(`/client?id=${id}`, userInfo);
+      }
       if (response.status == 200) {
         toastMessage("User updated successfully !", "success");
         setLoading(false);
@@ -186,6 +172,8 @@ const EditUser = () => {
             onclick={() => {
               if (!loading && !uploading) {
                 updateProfile();
+              } else {
+                toastMessage("loading...");
               }
             }}
           />

@@ -12,7 +12,7 @@ const ImageUploader = ({
   const fileInputRef = useRef(null);
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const newImages = files.map((file) => URL.createObjectURL(file));
+    const newImages = files;
     if (selectedImages.length == maxImages) return;
     if (selectedImages.length + newImages.length > maxImages) {
       const remainingImages = maxImages - selectedImages.length;
@@ -56,7 +56,12 @@ const ImageUploader = ({
         {selectedImages?.map((image, index) => (
           <div key={index} className="relative">
             <img
-              src={image}
+              onClick={() => {
+                console.log(typeof image);
+              }}
+              src={
+                typeof image == "object" ? URL.createObjectURL(image) : image
+              }
               alt={`selected-${index}`}
               className="h-20 w-20 object-cover rounded-md border"
             />

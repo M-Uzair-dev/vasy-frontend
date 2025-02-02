@@ -41,6 +41,7 @@ import Langauges from "./pages/Langauges";
 import ServicesRides from "./pages/ServicesRides";
 import RideOrders from "./pages/RideOrders";
 import RidesservicesEdit from "./pages/RidesservicesEdit";
+import RidesservicesCreate from "./pages/RideServicesCreate";
 import RideOrderview from "./pages/RideOrderview";
 import Driverrep from "./pages/Driverrep";
 import ApprovedDriver from "./pages/ApprovedDriver";
@@ -144,8 +145,13 @@ const appRoutes = [
     userType: ["super-admin", "admin"],
   },
   {
-    path: "/rides/serviceedit",
+    path: "/rides/serviceedit/:id",
     element: <RidesservicesEdit />,
+    userType: ["super-admin", "admin"],
+  },
+  {
+    path: "/rides/servicenew",
+    element: <RidesservicesCreate />,
     userType: ["super-admin", "admin"],
   },
   {

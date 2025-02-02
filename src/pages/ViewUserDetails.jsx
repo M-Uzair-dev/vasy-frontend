@@ -28,7 +28,7 @@ const ViewUserDetails = () => {
 
       const response = await api.get(`/client/profile?id=${userId}`);
       if (response.status == 200) {
-        setUser(response.data.client);
+        setUser({ ...response.data.client, balance: response.data.balance });
         setRideDetails(response.data.rideDetails);
         setTransactions(response.data.transactions);
         setLoading(false);

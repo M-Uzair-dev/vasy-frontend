@@ -7,6 +7,7 @@ import ImageUploader from "../UI/Inputs/ImageInput";
 import { toastMessage } from "../UI/Toast/toastMessage";
 import { api } from "../../api/useAxios";
 import LoaderSpinner from "../UI/Loaders/LoaderSpinner";
+import uploadFile from "../../api/uploadImage";
 
 const Restaurantuseredit = () => {
   const { id } = useParams();
@@ -18,6 +19,7 @@ const Restaurantuseredit = () => {
   });
   const [selectedImages2, setselectedImages2] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [editing, setEditing] = useState(false);
 
   const fetchData = async () => {
@@ -33,6 +35,7 @@ const Restaurantuseredit = () => {
           fullName: response.data.restaurant.fullName,
           email: response.data.restaurant.email,
           phoneNumber: response.data.restaurant.phoneNumber,
+          image: response.data.restaurant.image,
         });
         setselectedImages2([response.data.restaurant.image]);
         setLoading(false);
@@ -62,7 +65,27 @@ const Restaurantuseredit = () => {
         return;
       }
       setEditing(true);
-      const response = await api.put(`/restaurant?id=${id}`, restaurant);
+      let url;
+      if (selectedImages2[0] !== restaurant.image) {
+        url = await uploadFile(selectedImages2[0], setUploading);
+        console.log(url);
+        if (!url) {
+          toastMessage(
+            "Something went wrong while uploading the image !",
+            "error"
+          );
+          return;
+        }
+      }
+      let response;
+      if (url) {
+        response = await api.put(`/restaurant?id=${id}`, {
+          ...restaurant,
+          image: url,
+        });
+      } else {
+        response = await api.put(`/restaurant?id=${id}`, restaurant);
+      }
       if (response.status == 200) {
         toastMessage("User updated successfully !", "success");
         setEditing(false);
@@ -126,7 +149,9 @@ const Restaurantuseredit = () => {
         <div className="flex gap-4 w-full h-full items-end justify-end">
           <Button title="Back" onclick={() => nav(-1)} outline />
           <Button
-            title={editing ? "Saving..." : "Save"}
+            title={
+              uploading ? "uploading image..." : editing ? "Saving..." : "Save"
+            }
             onclick={() => {
               if (!loading && !editing) {
                 editUser();

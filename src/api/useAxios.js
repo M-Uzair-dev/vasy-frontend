@@ -2,10 +2,6 @@ import axios from "axios";
 
 const useAxios = () => {
   const token = localStorage.getItem("token");
-  let url =
-    import.meta.env.MODE == "development"
-      ? "http://localhost:8080"
-      : "https://backend-vasy.vercel.app/";
 
   const api = axios.create({
     baseURL:
@@ -13,12 +9,9 @@ const useAxios = () => {
         ? "http://localhost:8080"
         : "https://vasy-y.vercel.app",
   });
-  // Automatically Set Token into Header.
   if (token) {
-    // Add Your Headers Here
     api.defaults.headers.common["authorization"] = `${token}`;
   }
-  // You can use api for calls without useApi
   return api;
 };
 
@@ -28,6 +21,7 @@ let url =
   import.meta.env.MODE == "development"
     ? "http://localhost:8080"
     : "https://backend-vasy.vercel.app/";
+
 const api = axios.create({
   baseURL: url,
 });

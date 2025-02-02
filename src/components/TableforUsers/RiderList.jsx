@@ -3,7 +3,8 @@ import { Table } from "flowbite-react";
 import { Riderscontent } from "../../data/routes";
 import { Badge } from "flowbite-react";
 import CustomBadge from "../UI/Badges/CustomBadge";
-function RiderList({ ride }) {
+function RiderList({ ride, driver }) {
+  console.log(ride);
   function formatDate(isoDateString) {
     const date = new Date(isoDateString); // Parse the ISO date string
 
@@ -51,46 +52,46 @@ function RiderList({ ride }) {
                 <>
                   <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                     <Table.Cell>
-                      {value._id.slice(value._id.length - 9)}
+                      {value?._id?.slice(value?._id?.length - 9)}
                     </Table.Cell>
                     <Table.Cell>
-                      {value.driver.firstName + " " + value.driver.lastName}
+                      {value?.driver?.firstName + " " + value?.driver?.lastName}
                     </Table.Cell>
-                    <Table.Cell>{value.service.title}</Table.Cell>
-                    <Table.Cell>{formatDate(value.createdAt)}</Table.Cell>
+                    <Table.Cell>{value?.service?.title}</Table.Cell>
+                    <Table.Cell>{formatDate(value?.createdAt)}</Table.Cell>
                     <Table.Cell>
                       <CustomBadge
-                        text={value.status}
+                        text={value?.status}
                         type={
-                          value.status == "started" ||
-                          value.status == "placed" ||
-                          value.status == "accepted"
+                          value?.status == "started" ||
+                          value?.status == "placed" ||
+                          value?.status == "accepted"
                             ? "info"
-                            : value.status == "rejected"
+                            : value?.status == "rejected"
                             ? "error"
-                            : value.status == "completed"
+                            : value?.status == "completed"
                             ? "success"
                             : ""
                         }
                       />
                     </Table.Cell>
-                    <Table.Cell>{value.payment.paymentMethod}</Table.Cell>
+                    <Table.Cell>{value?.payment?.paymentMethod}</Table.Cell>
                     <Table.Cell>
                       <CustomBadge
-                        text={value.payment.status}
+                        text={value?.payment?.status}
                         type={
-                          value.payment.status == "pending"
+                          value?.payment?.status == "pending"
                             ? "info"
-                            : value.payment.status == "completed" ||
-                              value.payment.status == "refunded"
+                            : value?.payment?.status == "completed" ||
+                              value?.payment?.status == "refunded"
                             ? "success"
-                            : value.payment.status == "failed"
+                            : value?.payment?.status == "failed"
                             ? "error"
                             : ""
                         }
                       />
                     </Table.Cell>
-                    <Table.Cell>$ {value.payment.amount}</Table.Cell>
+                    <Table.Cell>$ {value?.payment?.amount}</Table.Cell>
                   </Table.Row>
                 </>
               );
