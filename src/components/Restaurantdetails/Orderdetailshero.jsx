@@ -22,7 +22,12 @@ function Orderdetailshero() {
       <DashBoardLayout heading={"Order details"}>
         <div className="bg-[#EDF2F7]  rounded-xl   ">
           <div className=" border-b-2 p-4">
-            <h1 className=" text-[18px] font-[700] text-[#1B3B5F]">
+            <h1
+              className=" text-[18px] font-[700] text-[#1B3B5F]"
+              onClick={() => {
+                console.log(response);
+              }}
+            >
               Orders Information
             </h1>
             <div className="pb-6">
@@ -64,8 +69,12 @@ function Orderdetailshero() {
                 </div>
                 <div>{response?.data?.order?.riderId?.email}</div>
                 <div>{response?.data?.order?.riderId?.mobileNumber}</div>
-                <div>Pickup location</div>
-                <div>Dropoff location</div>
+                <div>{response?.data?.address || " "}</div>
+                <div>
+                  Street {response?.data?.order?.address?.street}, city :{" "}
+                  {response?.data?.order?.address?.city}, country :{" "}
+                  {response?.data?.order?.address?.country}{" "}
+                </div>
               </div>
             </div>
           </div>

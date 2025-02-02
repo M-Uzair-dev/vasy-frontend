@@ -9,21 +9,21 @@ import Button from "../components/button/Button";
 import AddAmountModal from "../components/UI/Modals/AddAmountModal";
 import { useParams } from "react-router-dom";
 import useApi from "../api/useApi";
+import LoaderSpinner from "../components/UI/Loaders/LoaderSpinner";
 function ViewDriver() {
   const tabs = ["Ride List", "Wallet Transactions", "Payouts Requests"];
   const [selectedTab, setselectedTab] = useState("Ride List");
   const [open, setopen] = useState(false);
   const { id } = useParams();
 
-  const callback = (data) => {
-    console.log("DATA : ", data);
-  };
-  const { apiCall, response, loading } = useApi("GET", callback);
+  const { apiCall, response, loading } = useApi("GET");
 
   useEffect(() => {
     apiCall(`/driver/${id}`);
   }, []);
-
+  if (loading) {
+    return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
+  }
   return (
     <>
       {open && (
@@ -105,9 +105,9 @@ function ViewDriver() {
               <div>IBAN</div>
             </div>
             <div className="flex items-center justify-start gap-44 text-sm font-medium pt-3 text-[#737373]">
-              <div>{response?.data?.bank.holderName}</div>
-              <div>{response?.data?.bank.bankName}</div>
-              <div>{response?.data?.bank.branchName}</div>
+              <div>{response?.data?.bank?.holderName}</div>
+              <div>{response?.data?.bank?.bankName}</div>
+              <div>{response?.data?.bank?.branchName}</div>
               <div>{response?.data?.bank?.accountNo}</div>
             </div>
           </div>

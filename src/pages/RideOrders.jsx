@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashBoardLayout from "../layout/DashBoardLayout";
 import { Badge, Checkbox } from "flowbite-react";
 import { HiOutlineEye } from "react-icons/hi2";
@@ -10,13 +10,44 @@ import Formtoggle from "../assets/Formtoggle.png";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import CustomBadge from "../components/UI/Badges/CustomBadge";
 import DeleteModal from "../components/UI/Modals/DeleteModal";
+import useApi from "../api/useApi";
+import LoaderSpinner from "../components/UI/Loaders/LoaderSpinner";
 function RideOrders() {
   const [open, setopen] = useState(false);
+  const { apiCall, response, loading } = useApi("GET");
   const nav = useNavigate();
+
+  useEffect(() => {
+    apiCall("/ride");
+  }, []);
+  function formatDate(isoString) {
+    const date = new Date(isoString);
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    return `${
+      months[date.getUTCMonth()]
+    },${date.getUTCDate()},${date.getUTCFullYear()}`;
+  }
+
+  if (loading) {
+    return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
+  }
   return (
     <DashBoardLayout heading={"Ride Orders"} showSearch>
       <div className="overflow-x-auto">
-      {open && <DeleteModal setDeleteModal={setopen} deleteModal={open} />}
+        {open && <DeleteModal setDeleteModal={setopen} deleteModal={open} />}
         <Table>
           <Table.Head
             style={{ backgroundColor: "white" }}
@@ -36,20 +67,39 @@ function RideOrders() {
             <Table.HeadCell>ACTIONS</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y text-dark text-sm font-medium">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 12, 32].map((value, index) => {
+            {response?.data?.rides?.map((value, index) => {
               return (
                 <Table.Row key={index} className="bg-white">
                   <Table.Cell>
                     <Checkbox />
                   </Table.Cell>
-                  <Table.Cell>45425</Table.Cell>
-                  <Table.Cell>Name</Table.Cell>
-                  <Table.Cell>Driver name</Table.Cell>
-                  <Table.Cell>Dec,30,2024</Table.Cell>
-                  <Table.Cell>Car</Table.Cell>
-                  <Table.Cell>$24.00</Table.Cell>
                   <Table.Cell>
-                    <CustomBadge text="Rejected" type="error" />
+                    {value?._id.slice(value._id.length - 9)}
+                  </Table.Cell>
+                  <Table.Cell>
+                    {value.client.firstName + " " + value.client.lastName}
+                  </Table.Cell>
+                  <Table.Cell>
+                    {value.driver.firstName + " " + value.driver.lastName}
+                  </Table.Cell>
+                  <Table.Cell>{formatDate(value.createdAt)}</Table.Cell>
+                  <Table.Cell>{value.service.title}</Table.Cell>
+                  <Table.Cell>${value.amount}</Table.Cell>
+                  <Table.Cell>
+                    <CustomBadge
+                      text={value.status}
+                      type={
+                        value.status == "started" ||
+                        value.status == "placed" ||
+                        value.status == "accepted"
+                          ? "info"
+                          : value.status == "rejected"
+                          ? "error"
+                          : value.status == "completed"
+                          ? "success"
+                          : "warning"
+                      }
+                    />
                   </Table.Cell>
 
                   <Table.Cell>
@@ -60,7 +110,7 @@ function RideOrders() {
                         onClick={() => nav("/rides/Rideview")}
                       />
                       <RiDeleteBin6Line
-                       onClick={() => setopen(true)}
+                        onClick={() => setopen(true)}
                         color="#FF3636"
                         className="w-5 h-5 cursor-pointer hover:scale-105 duration-200"
                       />

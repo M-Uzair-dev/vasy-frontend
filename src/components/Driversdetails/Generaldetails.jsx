@@ -13,11 +13,15 @@ import DeleteModal from "../UI/Modals/DeleteModal";
 import useApi from "../../api/useApi";
 import LoaderSpinner from "../UI/Loaders/LoaderSpinner";
 import PaginationRow from "../UI/Pagination/PaginationRow";
+import { toastMessage } from "../UI/Toast/toastMessage";
+import { api } from "../../api/useAxios";
 function Generaldetails({ approved, pending }) {
   const [open, setopen] = useState(false);
   const [page, setPage] = useState(1);
   const [dataPerPage, setDataPerPage] = useState(5);
   const { apiCall, response, loading } = useApi("GET");
+  const [deleting, setDeleting] = useState("");
+  const [deleted, setDeleted] = useState([]);
   const nav = useNavigate();
 
   useEffect(() => {
@@ -30,13 +34,57 @@ function Generaldetails({ approved, pending }) {
     }
   }, [dataPerPage, page]);
 
+  const handleDelete = async () => {
+    try {
+      const res = await api.delete(`/driver?id=${deleting}`);
+      if (res.status == 200) {
+        toastMessage("Driver deleted successfully !", "success");
+        setDeleted([...deleted, deleting]);
+      } else {
+        toastMessage(res.data.message || "Something went wrong !", "error");
+      }
+    } catch (e) {
+      toastMessage(e.data.message || "Something went wrong !", "error");
+    } finally {
+      setopen(false);
+      setDeleting("");
+    }
+  };
+
+  function formatDate(isoString) {
+    const date = new Date(isoString);
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    return `${
+      months[date.getUTCMonth()]
+    },${date.getUTCDate()},${date.getUTCFullYear()}`;
+  }
+
   if (loading) {
     return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
   }
   return (
     <>
       <div className="overflow-x-auto">
-        {open && <DeleteModal setDeleteModal={setopen} deleteModal={open} />}
+        {open && (
+          <DeleteModal
+            handleDeleteClick={handleDelete}
+            setDeleteModal={setopen}
+            deleteModal={open}
+          />
+        )}
 
         <Table>
           <Table.Head className="text-xs text-[#84919A]">
@@ -60,6 +108,7 @@ function Generaldetails({ approved, pending }) {
                 <Table.Row
                   key={index}
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                  style={deleted.includes(value._id) ? { display: "none" } : {}}
                 >
                   <Table.Cell>
                     <Checkbox />
@@ -75,7 +124,7 @@ function Generaldetails({ approved, pending }) {
                   <Table.Cell>
                     <img src={Documenticon} alt="" />
                   </Table.Cell>
-                  <Table.Cell>Dec,30,2024</Table.Cell>
+                  <Table.Cell>{formatDate(value?.createdAt)}</Table.Cell>
                   <Table.Cell>{value?.role}</Table.Cell>
                   <Table.Cell>{value?.vehicle?.name}</Table.Cell>
                   <Table.Cell>{value?.rides}</Table.Cell>
@@ -87,7 +136,10 @@ function Generaldetails({ approved, pending }) {
                         onClick={() => nav(`/drivers/view/${value._id}`)}
                       />
                       <RiDeleteBin6Line
-                        onClick={() => setopen(true)}
+                        onClick={() => {
+                          setopen(true);
+                          setDeleting(value._id);
+                        }}
                         color="#FF3636"
                         className="w-5 h-7 cursor-pointer hover:scale-105 duration-200"
                       />
