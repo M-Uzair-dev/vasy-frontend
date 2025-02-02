@@ -19,7 +19,7 @@ function Restaurants() {
   useEffect(() => {
     let getData = async () => {
       try {
-        const res = await api.get("/restaurant//orders");
+        const res = await api.get("/restaurant/orders");
         if ((res.status = 200)) {
           setRestaurants(res.data.restaurants);
           setOrders(res.data.orders);
