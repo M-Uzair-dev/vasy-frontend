@@ -19,7 +19,9 @@ function Generaldetails({ approved, pending }) {
   const [open, setopen] = useState(false);
   const [page, setPage] = useState(1);
   const [dataPerPage, setDataPerPage] = useState(5);
-  const { apiCall, response, loading } = useApi("GET");
+  const { apiCall, response, loading } = useApi("GET", (data) => {
+    console.log("DATA IS :", data);
+  });
   const [deleting, setDeleting] = useState("");
   const [deleted, setDeleted] = useState([]);
   const nav = useNavigate();
