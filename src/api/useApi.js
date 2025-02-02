@@ -8,7 +8,7 @@ const useAxios = () => {
     baseURL:
       import.meta.env.MODE == "development"
         ? "http://localhost:8080"
-        : "https://vasy-y.vercel.app",
+        : "https://backend-vasy.vercel.app",
   });
   if (token) {
     api.defaults.headers.common["authorization"] = `${token}`;
