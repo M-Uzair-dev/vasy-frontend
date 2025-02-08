@@ -1,44 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DashBoardLayout from "../layout/DashBoardLayout";
 import CustomInput from "../components/UI/Inputs/CustomInput";
 import Button from "../components/button/Button";
 import ImageUploader from "../components/UI/Inputs/ImageInput";
 import CustomSelect from "../components/UI/Selects/CustomSelect";
-import useApi from "../api/useApi";
-import LoaderSpinner from "../components/UI/Loaders/LoaderSpinner";
 import { toastMessage } from "../components/UI/Toast/toastMessage";
-import { BsDatabaseDash } from "react-icons/bs";
 import uploadFile from "../api/uploadImage";
 import { api } from "../api/useAxios";
 
 function RulesEditDriver() {
   const [selected, setselected] = useState("");
   const [selectedImages, setselectedImages] = useState([]);
-  const { id } = useParams();
   const nav = useNavigate();
-  const [data, setData] = useState({});
-  const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-
-  const { apiCall, loading, response } = useApi("GET", (data2) => {
-    setData(data2.rule);
-    setselectedImages([data2.rule.image]);
+  const [saving, setSaving] = useState(false);
+  const [data, setData] = useState({
+    status: "active",
+    name: "",
   });
-
-  useEffect(() => {
-    if (!id) {
-      nav(-1);
-      return;
-    }
-    apiCall(`/rules?id=${id}`);
-  }, [id]);
 
   const handleSubmit = async () => {
     try {
       let url;
 
-      if (selectedImages[0] !== data.image) {
+      if (selectedImages[0]) {
         url = await uploadFile(selectedImages[0], setUploading);
         if (!url) {
           toastMessage(
@@ -47,6 +33,9 @@ function RulesEditDriver() {
           );
           return;
         }
+      } else {
+        toastMessage("Image is required", "error");
+        return;
       }
 
       setUploading(false);
@@ -54,29 +43,31 @@ function RulesEditDriver() {
       let response;
 
       if (url) {
-        response = await api.put(`/rules?id=${id}`, { ...data, image: url });
+        response = await api.post(`/rules`, { ...data, image: url });
+        console.log(response);
       } else {
-        response = await api.put(`/rules?id=${id}`, data);
+        toastMessage("Something went wrong while uploading the image", "error");
+        return;
       }
-      if (response.status == 200) {
-        toastMessage("Rule updated successfully", "success");
+      if (response.status == 201) {
+        toastMessage("Rule added successfully", "success");
         nav(-1);
       } else {
         toastMessage(response.data.message || "Something went wrong", "error");
       }
     } catch (e) {
-      toastMessage(e.data.message || "Something went wrong !", "error");
+      console.log(e);
+      toastMessage(
+        e.response.data.message || "Something went wrong !",
+        "error"
+      );
     } finally {
-      setSaving(false);
       setUploading(false);
+      setSaving(false);
     }
   };
-  if (loading) {
-    return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
-  }
-
   return (
-    <DashBoardLayout heading={"Edit rule"}>
+    <DashBoardLayout heading={"Add new Rules"}>
       <form action="" className="flex flex-col gap-7 h-[60vh] ">
         <div className="flex justify-start gap-5">
           <CustomInput
@@ -128,12 +119,8 @@ function RulesEditDriver() {
         <div className="flex gap-4 w-full h-full items-end justify-end">
           <Button title="Back" onclick={() => nav(-1)} outline />
           <Button
-            title={
-              uploading ? "Uploading image..." : saving ? "Saving..." : "Save"
-            }
-            onclick={() => {
-              if (!loading && !uploading && !saving) handleSubmit();
-            }}
+            title={uploading ? "Uploading..." : saving ? "Saving..." : "Save"}
+            onclick={handleSubmit}
           />
         </div>
       </form>

@@ -12,8 +12,12 @@ import CustomBadge from "../components/UI/Badges/CustomBadge";
 import DeleteModal from "../components/UI/Modals/DeleteModal";
 import useApi from "../api/useApi";
 import LoaderSpinner from "../components/UI/Loaders/LoaderSpinner";
+import { toastMessage } from "../components/UI/Toast/toastMessage";
+import { api } from "../api/useAxios";
 function RideOrders() {
   const [open, setopen] = useState(false);
+  const [deleting, setDeleting] = useState("");
+  const [deleted, setDeleted] = useState([]);
   const { apiCall, response, loading } = useApi("GET");
   const nav = useNavigate();
 
@@ -41,13 +45,45 @@ function RideOrders() {
     },${date.getUTCDate()},${date.getUTCFullYear()}`;
   }
 
+  const deleteOrder = async () => {
+    try {
+      if (deleting == "") {
+        toastMessage("Please select an order to delete !", "error");
+      }
+
+      let response = await api.delete(`/ride?id=${deleting}`);
+      if (response.status == 200) {
+        toastMessage("Ride deleted successfully !", "success");
+        setDeleted([...deleted, deleting]);
+        setopen(false);
+        setDeleting("");
+      } else {
+        toastMessage(
+          response.data.message || "Something went wrong !",
+          "error"
+        );
+        setopen(false);
+        setDeleting("");
+      }
+    } catch (e) {
+      toastMessage("Something went wrong !", "error");
+      setopen(false);
+      setDeleting("");
+    }
+  };
   if (loading) {
     return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
   }
   return (
     <DashBoardLayout heading={"Ride Orders"} showSearch>
       <div className="overflow-x-auto">
-        {open && <DeleteModal setDeleteModal={setopen} deleteModal={open} />}
+        {open && (
+          <DeleteModal
+            handleDeleteClick={deleteOrder}
+            setDeleteModal={setopen}
+            deleteModal={open}
+          />
+        )}
         <Table>
           <Table.Head
             style={{ backgroundColor: "white" }}
@@ -69,7 +105,11 @@ function RideOrders() {
           <Table.Body className="divide-y text-dark text-sm font-medium">
             {response?.data?.rides?.map((value, index) => {
               return (
-                <Table.Row key={index} className="bg-white">
+                <Table.Row
+                  style={deleted.includes(value._id) ? { display: "none" } : {}}
+                  key={index}
+                  className="bg-white"
+                >
                   <Table.Cell>
                     <Checkbox />
                   </Table.Cell>
@@ -107,10 +147,13 @@ function RideOrders() {
                       <HiOutlineEye
                         color="#000000"
                         className="w-5 h-5 cursor-pointer hover:scale-105 duration-200"
-                        onClick={() => nav("/rides/Rideview")}
+                        onClick={() => nav(`/rides/Rideview/${value._id}`)}
                       />
                       <RiDeleteBin6Line
-                        onClick={() => setopen(true)}
+                        onClick={() => {
+                          setopen(true);
+                          setDeleting(value._id);
+                        }}
                         color="#FF3636"
                         className="w-5 h-5 cursor-pointer hover:scale-105 duration-200"
                       />

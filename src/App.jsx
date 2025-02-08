@@ -24,6 +24,7 @@ import Transactionrep from "./pages/Transactionrep";
 import EditVehicledetails from "./pages/EditVehicledetails";
 import AddVehicleform from "./pages/AddVehicleform";
 import RulesEditDriver from "./pages/RulesEditDriver";
+import RulesCreateDriver from "./pages/RulesCreateDriver";
 import RulesDeleteddriver from "./pages/RulesDeleteddriver";
 import Taxes from "./pages/Taxes";
 import Zones from "./pages/Zones";
@@ -155,7 +156,7 @@ const appRoutes = [
     userType: ["super-admin", "admin"],
   },
   {
-    path: "/rides/Rideview",
+    path: "/rides/Rideview/:id",
     element: <RideOrderview />,
     userType: ["super-admin", "admin"],
   },
@@ -190,7 +191,7 @@ const appRoutes = [
     userType: ["super-admin", "admin"],
   },
   {
-    path: "/vehicletypes/edit",
+    path: "/vehicletypes/edit/:id",
     element: <EditVehicledetails />,
     userType: ["super-admin", "admin"],
   },
@@ -206,8 +207,13 @@ const appRoutes = [
     userType: ["super-admin", "admin"],
   },
   {
-    path: "/rules/edit",
+    path: "/rules/edit/:id",
     element: <RulesEditDriver />,
+    userType: ["super-admin", "admin"],
+  },
+  {
+    path: "/rules/new",
+    element: <RulesCreateDriver />,
     userType: ["super-admin", "admin"],
   },
   {
