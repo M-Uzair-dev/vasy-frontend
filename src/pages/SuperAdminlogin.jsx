@@ -45,6 +45,7 @@ function SuperAdminlogin() {
       if (res.status == 200) {
         toastMessage("Welcome Super Admin !", "success");
         localStorage.setItem("user", "super-admin");
+        localStorage.setItem("userId", res.data.user._id);
         localStorage.setItem("token", res.data.token);
         setLoading(false);
         navigate("/dashboard");

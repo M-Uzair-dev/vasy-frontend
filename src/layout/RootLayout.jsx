@@ -32,8 +32,10 @@ const RootLayout = () => {
       <div className="ml-72">
         <NavBar />
       </div>
-      <div className="ml-72 overflow-x-hidden">
-        <Outlet />
+      <div className="ml-72 overflow-x-hidden min-h-[80vh]">
+        <div className="wrapper min-h-[80vh]">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

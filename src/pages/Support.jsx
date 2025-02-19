@@ -11,7 +11,7 @@ function Support() {
   const [selectedTab, setselectedTab] = useState("Riders");
   return (
     <DashBoardLayout heading={"Support"}>
-      <div className="p-4 bg-[#EDF2F7] flex justify-start gap-4 pb-0 rounded-t-xl">
+      <div className="p-4 bg-[#EDF2F7] flex justify-start gap-4 pb-0 rounded-t-xl min-h-[80vh]">
         {tabs.map((item) => (
           <Tab
             key={item}

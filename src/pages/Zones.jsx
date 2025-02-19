@@ -1,10 +1,8 @@
-import React from 'react'
-import Zonestable from '../components/TableforUsers/Zonestable'
+import React from "react";
+import Zonestable from "../components/TableforUsers/Zonestable";
 
 function Zones() {
-  return (
-    <Zonestable/>
-  )
+  return <Zonestable />;
 }
 
-export default Zones
+export default Zones;

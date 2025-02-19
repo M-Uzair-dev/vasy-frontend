@@ -85,7 +85,7 @@ function RidesservicesEdit() {
 
   return (
     <DashBoardLayout heading={"Add services"}>
-      <form action="" className="flex flex-col gap-16 h-[60vh] ">
+      <form action="" className="flex flex-col gap-16 h-[80vh]  ">
         <div className="flex justify-start gap-5">
           <CustomInput
             label={"Service Title"}

@@ -79,7 +79,7 @@ function Generaldetails({ approved, pending }) {
   }
   return (
     <>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto min-h-[80vh]">
         {open && (
           <DeleteModal
             handleDeleteClick={handleDelete}

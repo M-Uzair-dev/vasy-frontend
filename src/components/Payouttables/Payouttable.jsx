@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Badge, Table } from "flowbite-react";
 import { Checkbox } from "flowbite-react";
 import { GiCancel } from "react-icons/gi";
@@ -8,13 +8,20 @@ import AddAmountModal from "../UI/Modals/AddAmountModal";
 import CustomBadge from "../UI/Badges/CustomBadge";
 import Bank from "../UI/Modals/Bank";
 import DeleteModal from "../UI/Modals/DeleteModal";
-function Payouttable({ payouts, name }) {
+import useApi from "../../api/useApi";
+import LoaderSpinner from "../UI/Loaders/LoaderSpinner";
+import { toastMessage } from "../UI/Toast/toastMessage";
+import { api } from "../../api/useAxios";
+
+function Payouttable() {
   const [open1, setopen1] = useState(false);
   const [open, setopen] = useState(false);
+  const [bank, setBank] = useState({});
+  const [accepted, setAccepted] = useState([]);
+  const [rejected, setRejected] = useState([]);
+  const { apiCall, response, loading } = useApi("GET");
   function formatDate(isoDateString) {
-    const date = new Date(isoDateString); // Parse the ISO date string
-
-    // Define an array of month names
+    const date = new Date(isoDateString);
     const monthNames = [
       "Jan",
       "Feb",
@@ -29,20 +36,61 @@ function Payouttable({ payouts, name }) {
       "Nov",
       "Dec",
     ];
-
-    // Get the components for the formatted date
     const month = monthNames[date.getUTCMonth()];
     const day = date.getUTCDate();
     const year = date.getUTCFullYear();
 
-    // Return the formatted date as a string
     return `${month} ${day}, ${year}`;
   }
+  useEffect(() => {
+    apiCall("/payment");
+  }, []);
+
+  const accept = async (id) => {
+    try {
+      if (!id) {
+        return;
+      }
+      toastMessage("updating...", "info");
+      await api.put("/payment", {
+        paymentId: id,
+        status: "completed",
+      });
+      setAccepted((prev) => {
+        return [...prev, id];
+      });
+    } catch (e) {
+      toastMessage("Something went wrong !", "error");
+      window.location.reload();
+    }
+  };
+  const reject = async (id) => {
+    try {
+      if (!id) {
+        return;
+      }
+      await api.put("/payment", {
+        paymentId: id,
+        status: "failed",
+      });
+      setRejected((prev) => {
+        return [...prev, id];
+      });
+    } catch (e) {
+      toastMessage("Something went wrong !", "error");
+      window.location.reload();
+    }
+  };
+
+  if (loading) {
+    return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
+  }
+
   return (
     <>
-      {open && <Bank openModal={open} setOpenModal={setopen} />}
+      {open && <Bank openModal={open} setOpenModal={setopen} bank={bank} />}
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto min-h-[80vh]">
         {open1 && <DeleteModal setDeleteModal={setopen1} deleteModal={open1} />}
         <Table>
           <Table.Head>
@@ -58,7 +106,7 @@ function Payouttable({ payouts, name }) {
             <Table.HeadCell>Action </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {payouts?.map((value) => {
+            {response?.data?.payments?.map((value) => {
               return (
                 <Table.Row
                   key={value._id}
@@ -68,15 +116,27 @@ function Payouttable({ payouts, name }) {
                     <Table.Cell>
                       <Checkbox />{" "}
                     </Table.Cell>
-                    <Table.Cell>Driver</Table.Cell>
-                    <Table.Cell>{name}</Table.Cell>
+                    <Table.Cell>{value?.client?.userType}</Table.Cell>
+                    <Table.Cell>
+                      {value?.client.firstName + " " + value?.client.lastName}
+                    </Table.Cell>
                     <Table.Cell>{value?.amount}</Table.Cell>
                     <Table.Cell>{formatDate(value?.createdAt)}</Table.Cell>{" "}
                     <Table.Cell>
                       <CustomBadge
-                        text={value?.status}
+                        text={
+                          accepted.includes(value._id)
+                            ? "completed"
+                            : rejected.includes(value._id)
+                            ? "failed"
+                            : value?.status
+                        }
                         type={
-                          value?.status == "pending"
+                          accepted.includes(value._id)
+                            ? "success"
+                            : rejected.includes(value._id)
+                            ? "error"
+                            : value?.status == "pending"
                             ? "info"
                             : value?.status == "refunded"
                             ? "warning"
@@ -94,14 +154,29 @@ function Payouttable({ payouts, name }) {
                         <HiOutlineEye
                           color="#000000"
                           className="w-5 h-5 cursor-pointer hover:scale-105 duration-200"
-                          onClick={() => setopen(true)}
+                          onClick={() => {
+                            if (value.client.bank) {
+                              setopen(true);
+                              setBank(value?.client?.bank);
+                            } else {
+                              toastMessage(
+                                "User has no bank in the database !",
+                                "error"
+                              );
+                            }
+                          }}
                         />
                         <GiCancel
-                          onClick={() => setopen1(true)}
+                          onClick={() => {
+                            reject(value._id);
+                          }}
                           color="#FF3636"
                           className="w-5 h-5 cursor-pointer hover:scale-105 duration-200"
                         />
                         <FaRegCheckCircle
+                          onClick={() => {
+                            accept(value._id);
+                          }}
                           color="#069803"
                           className="w-5 h-5 cursor-pointer hover:scale-105 duration-200"
                         />

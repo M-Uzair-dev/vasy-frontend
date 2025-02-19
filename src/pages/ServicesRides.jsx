@@ -66,7 +66,7 @@ function ServicesRides() {
         nav("/rides/servicenew");
       }}
     >
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto min-h-[80vh]">
         {open && (
           <DeleteModal
             setDeleteModal={setopen}

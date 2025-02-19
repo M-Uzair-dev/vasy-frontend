@@ -10,22 +10,34 @@ import { toastMessage } from "../UI/Toast/toastMessage";
 import { api } from "../../api/useAxios";
 
 function Addtaxdetail() {
+  const [selected, setselected] = useState("");
   const nav = useNavigate();
-  const adminID = localStorage.getItem("userId");
-  const [data, setData] = useState({
-    amount: 0,
-    location: "",
+  const [data, setData] = useState({});
+  const { apiCall, loading } = useApi("GET", (data2) => {
+    if (data2) {
+      setData(data2);
+    } else {
+      nav(-1);
+    }
   });
   const [updating, setUpdating] = useState(false);
+  const { id } = useParams();
 
-  const Add = async () => {
+  useEffect(() => {
+    if (id) {
+      apiCall(`/tax?id=${id}`);
+    } else {
+      nav(-1);
+    }
+  }, []);
+
+  const update = async () => {
     try {
       if (updating) return;
-      if (!adminID) return;
       setUpdating(true);
-      const answer = await api.post(`/tax`, { ...data, admin: adminID });
-      if (answer.status == 201) {
-        toastMessage("Tax Created successfully !", "success");
+      const answer = await api.put(`/tax?id=${id}`, data);
+      if (answer.status == 200) {
+        toastMessage("Tax updated successfully !", "success");
         nav(-1);
       }
     } catch (e) {
@@ -35,6 +47,9 @@ function Addtaxdetail() {
     }
   };
 
+  if (loading) {
+    return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
+  }
   return (
     <DashBoardLayout heading={"Edit tax details"}>
       <form action="" className="flex flex-col gap-7 h-[60vh] ">
@@ -73,7 +88,7 @@ function Addtaxdetail() {
           <Button
             title={updating ? "saving..." : "Save"}
             onclick={() => {
-              Add();
+              update();
             }}
           />
         </div>

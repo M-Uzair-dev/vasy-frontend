@@ -33,7 +33,9 @@ import Services from "./pages/Services";
 import Support from "./pages/Support";
 import Setting from "./pages/Setting";
 import Addtaxdetail from "./components/TableforUsers/Addtaxdetail";
+import Edittaxdetail from "./components/TableforUsers/Edittaxdetail";
 import ZonesEdit from "./pages/ZonesEdit";
+import ZonesNew from "./pages/ZonesNew";
 import Notificationadd from "./pages/Notificationadd";
 import NotificationEdit from "./pages/NotificationEdit";
 import SettingCommission from "./pages/SettingCommission";
@@ -243,14 +245,24 @@ const appRoutes = [
   },
   { path: "/taxes", element: <Taxes />, userType: ["super-admin", "admin"] },
   {
-    path: "/taxes/edit",
+    path: "/taxes/edit/:id",
+    element: <Edittaxdetail />,
+    userType: ["super-admin", "admin"],
+  },
+  {
+    path: "/taxes/new",
     element: <Addtaxdetail />,
     userType: ["super-admin", "admin"],
   },
   { path: "/zones", element: <Zones />, userType: ["super-admin", "admin"] },
   {
-    path: "/zones/edit",
+    path: "/zones/edit/:id",
     element: <ZonesEdit />,
+    userType: ["super-admin", "admin"],
+  },
+  {
+    path: "/zones/new",
+    element: <ZonesNew />,
     userType: ["super-admin", "admin"],
   },
   {
