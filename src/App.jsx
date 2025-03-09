@@ -276,9 +276,14 @@ const appRoutes = [
     userType: ["super-admin", "admin"],
   },
   {
-    path: "/notification/edit",
+    path: "/notification/edit/:id",
     element: <NotificationEdit />,
     userType: ["super-admin", "admin"],
+  },
+  {
+    path: "/support/:id",
+    element: <Support />,
+    userType: ["super-admin", "admin", "agent"],
   },
   {
     path: "/support",

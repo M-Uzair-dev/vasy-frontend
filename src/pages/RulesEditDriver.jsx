@@ -38,7 +38,7 @@ function RulesEditDriver() {
     try {
       let url;
 
-      if (selectedImages[0] !== data.image) {
+      if (selectedImages[0] !== data.image && selectedImages[0]) {
         url = await uploadFile(selectedImages[0], setUploading);
         if (!url) {
           toastMessage(

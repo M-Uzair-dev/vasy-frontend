@@ -59,6 +59,9 @@ function Payouttable() {
       setAccepted((prev) => {
         return [...prev, id];
       });
+      setRejected((prev) => {
+        return prev.filter((item) => item !== id);
+      });
     } catch (e) {
       toastMessage("Something went wrong !", "error");
       window.location.reload();
@@ -75,6 +78,9 @@ function Payouttable() {
       });
       setRejected((prev) => {
         return [...prev, id];
+      });
+      setAccepted((prev) => {
+        return prev.filter((item) => item !== id);
       });
     } catch (e) {
       toastMessage("Something went wrong !", "error");

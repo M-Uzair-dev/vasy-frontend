@@ -1,47 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashBoardLayout from "../layout/DashBoardLayout";
 import MessageRow from "../components/Message/MessageRow";
 import MessageSideBar from "../components/Message/MessageSideBar";
 import MessageBody from "../components/Message/MessageBody";
 import MessageInput from "../components/Message/MessageInput";
-const image =
-  "https://cdn4.iconfinder.com/data/icons/characters-5/512/1-08-512.png";
+import useApi from "../api/useApi";
+import LoaderSpinner from "../components/UI/Loaders/LoaderSpinner";
+import { useParams } from "react-router-dom";
+import MessageSection from "./messageSection";
+
 function Support() {
-  const tabs = ["Riders", "Drivers", "Restaurants"];
-  const [selectedTab, setselectedTab] = useState("Riders");
+  const tabs = ["client", "driver", "Restaurant"];
+  const [selectedTab, setselectedTab] = useState("client");
+  const { response, loading, apiCall } = useApi("GET", (data) => {
+    console.log(data);
+  });
+  const { id } = useParams();
+  const [chatId, setChatId] = useState(id);
+
+  useEffect(() => {
+    setChatId(null);
+    apiCall(`/chat/conversation/${selectedTab}`);
+  }, [selectedTab]);
+  useEffect(() => {
+    setChatId(id);
+  }, [id]);
+  if (loading) {
+    return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
+  }
   return (
     <DashBoardLayout heading={"Support"}>
-      <div className="p-4 bg-[#EDF2F7] flex justify-start gap-4 pb-0 rounded-t-xl min-h-[80vh]">
+      <div className="p-4 bg-[#EDF2F7] flex justify-start gap-4 pb-0 rounded-t-xl ">
         {tabs.map((item) => (
           <Tab
             key={item}
-            text={item}
+            text={`${item}`.charAt(0).toUpperCase() + item.slice(1) + "s"}
             selected={selectedTab === item}
             onClick={() => setselectedTab(item)}
           />
         ))}
       </div>
       <div className="flex h-[60vh]">
-        <MessageSideBar />
+        <MessageSideBar data={response?.data} />
         {/* Message Other SIde */}
         <div className="basis-9/12 px-2">
-          <div className="flex items-center gap-2 py-6 font-bold text-xl">
-            <div className="flex gap-x-2">
-              <img width={45} height={45} alt="" src={image} />
-              <div>
-                <h2 className="font-semibold text-secondary text-base">
-                  Username
-                </h2>
-                <p className="text-sm text-main">Active Now</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex bg-[#F3F3F3] rounded-lg flex-col justify-between gap-2 h-[85%]">
-            <MessageBody />
-            <div className="w-full py-5 px-5">
-              <MessageInput />
-            </div>
-          </div>
+          {chatId ? (
+            <>
+              <MessageSection id={chatId} />
+            </>
+          ) : (
+            <p>No Chat Selected</p>
+          )}
         </div>
       </div>
     </DashBoardLayout>

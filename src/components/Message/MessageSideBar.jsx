@@ -1,26 +1,30 @@
 import React from "react";
 import MessageRow, { messages } from "./MessageRow";
+import { useNavigate } from "react-router-dom";
 
-export default function MessageSideBar() {
+export default function MessageSideBar({ data }) {
+  const nav = useNavigate();
   return (
     <div id="sidebar-items" className="basis-3/12 overflow-y-auto">
       <div className="text-secondary flex items-center gap-2 p-6 font-bold text-xl">
         Inbox
-        <span className="bg-main/25 bg-opacity-10 p-1 rounded-md text-xs">
-          4 New
-        </span>
       </div>
       <div className="px-6">
         <div className="text-[#92929D] font-normal mt-3">All Messages</div>
         <div className="flex flex-col gap-4 mt-5">
-          {messages?.slice(0, 10).map((item, index) => {
+          {data?.map((chat) => {
             return (
               <MessageRow
-                date={item.date}
-                image={item.image}
-                message={item.message}
-                name={item.name}
-                key={index}
+                onClick={() => {
+                  nav(`/support/${chat._id}`);
+                }}
+                date={chat?.lastMessage?.createdAt || chat?.createdAt}
+                image={chat?.participant?.image}
+                message={chat?.lastMessage?.content}
+                name={
+                  chat?.participant?.firstName + chat?.participant?.lastName
+                }
+                key={chat?._id}
               />
             );
           })}

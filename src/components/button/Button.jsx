@@ -7,10 +7,12 @@ function Button({
   outline,
   className = "",
   type = "button",
+  style = {},
 }) {
   return (
     <button
       onClick={onclick}
+      style={style}
       type={type}
       className={`hover:scale-x-105 duration-200 hover:shadow-main flex items-center gap-5 border-2 rounded-lg px-14 py-2  text-lg font-medium ${
         outline ? "text-main border-main " : "bg-main text-white"
