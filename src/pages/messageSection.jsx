@@ -42,13 +42,17 @@ const messageSection = ({ id }) => {
             conversationId: id,
           });
         } else {
-          toastMessage("Something went wrong !", "error");
+          toastMessage("Please login to send message", "error");
         }
       } else {
         toastMessage("Nothing to send.", "error");
       }
     } catch (e) {
-      toastMessage("Something went wrong !", "error");
+      toastMessage(
+        e.response.data.message || "Something went wrong !",
+        "error"
+      );
+      console.log(e);
       window.location.reload();
     }
   };

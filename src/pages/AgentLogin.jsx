@@ -47,6 +47,7 @@ function SuperAdminlogin() {
         toastMessage("Welcome Agent !", "success");
         localStorage.setItem("user", "agent");
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userId", res.data.user._id);
         setLoading(false);
         navigate("/dashboard");
       } else {

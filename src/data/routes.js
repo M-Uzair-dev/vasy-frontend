@@ -146,7 +146,7 @@ export const sidebarData = [
   },
   {
     title: "Payout Requests",
-    usersAllowed: [ "resturant"],
+    usersAllowed: ["resturant"],
     link: "/payoutrequest",
     Icon: Payment,
   },
@@ -194,11 +194,11 @@ export const sidebarData = [
         link: "/settings/adminsettings",
         usersAllowed: ["admin", "super-admin"],
       },
-      {
-        title: "Langauges ",
-        link: "/settings/languages",
-        usersAllowed: ["admin", "super-admin", "resturant"],
-      },
+      // {
+      //   title: "Langauges ",
+      //   link: "/settings/languages",
+      //   usersAllowed: ["admin", "super-admin", "resturant"],
+      // },
     ],
   },
 ];

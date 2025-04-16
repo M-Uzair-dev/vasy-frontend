@@ -12,9 +12,10 @@ const NavBar = () => {
       {open && <Logout openModal={open} setOpenModal={setopen} />}
       {open1 && <LanguageModal openModal={open1} setOpenModal={setopen1} />}
       <div className="flex border-2 border-l-0 py-3 px-6 justify-between items-center w-full">
-        <Search />
+        {/* <Search /> */}
+        <div></div>
         <div className="flex gap-10">
-          <div
+          {/* <div
             onClick={() => setopen1(true)}
             className="flex justify-center cursor-pointer hover:scale-105 duration-200 gap-2 items-center"
           >
@@ -26,7 +27,7 @@ const NavBar = () => {
               className="w-5 h-5"
               onClick={() => setopen1(true)}
             />
-          </div>
+          </div> */}
           <div
             onClick={() => setopen(true)}
             className="flex items-center gap-3 cursor-pointer hover:scale-105 duration-200"

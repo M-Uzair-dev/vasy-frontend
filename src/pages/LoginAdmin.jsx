@@ -43,9 +43,10 @@ function SuperAdminlogin() {
         role: "admin",
       });
       if (res.status == 200) {
+        console.log("LOGIN DATA", res.data);
         toastMessage("Welcome Admin !", "success");
         localStorage.setItem("user", "admin");
-        localStorage.setItem("userId", res.user._id);
+        localStorage.setItem("userId", res.data.user._id);
 
         localStorage.setItem("token", res.data.token);
         setLoading(false);
