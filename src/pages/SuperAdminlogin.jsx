@@ -47,6 +47,8 @@ function SuperAdminlogin() {
         localStorage.setItem("user", "super-admin");
         localStorage.setItem("userId", res.data.user._id);
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("name", res.data.user.name || res.data.user.role);
+        localStorage.setItem("email", res.data.user.email);
         setLoading(false);
         navigate("/dashboard");
       } else {

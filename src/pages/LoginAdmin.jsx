@@ -47,7 +47,8 @@ function SuperAdminlogin() {
         toastMessage("Welcome Admin !", "success");
         localStorage.setItem("user", "admin");
         localStorage.setItem("userId", res.data.user._id);
-
+        localStorage.setItem("name", res.data.user.name || res.data.user.role);
+        localStorage.setItem("email", res.data.user.email);
         localStorage.setItem("token", res.data.token);
         setLoading(false);
         navigate("/dashboard");

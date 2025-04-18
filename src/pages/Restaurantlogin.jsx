@@ -46,6 +46,9 @@ function SuperAdminlogin() {
         toastMessage("Welcome Restaurant Admin !", "success");
         localStorage.setItem("user", "resturant");
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("name", res.data.user.name || res.data.user.role);
+        localStorage.setItem("email", res.data.user.email);
+        localStorage.setItem("userId", res.data.user._id);
         setLoading(false);
         navigate("/dashboard");
       } else {

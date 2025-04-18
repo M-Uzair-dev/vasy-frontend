@@ -35,7 +35,6 @@ const useApi = (method, callBack) => {
       if (callBack) callBack(res.data);
       return res;
     } catch (e) {
-      console.log(e);
       seterror(e);
       setloading(false);
     }

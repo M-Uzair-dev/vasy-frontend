@@ -33,8 +33,12 @@ const NavBar = () => {
             className="flex items-center gap-3 cursor-pointer hover:scale-105 duration-200"
           >
             <div className="flex flex-col items-end gap-1">
-              <span className="text-base font-semibold ">JaydonDias</span>
-              <span className="text-sm">Mumkin@gmail.com</span>
+              <span className="text-base font-semibold ">
+                {localStorage.getItem("name") || "No Name Found"}
+              </span>
+              <span className="text-sm">
+                {localStorage.getItem("email") || "no email found"}
+              </span>
             </div>
             <MdKeyboardArrowDown className="w-5 h-5" />
           </div>

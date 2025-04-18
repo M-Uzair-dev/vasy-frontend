@@ -184,11 +184,11 @@ export const sidebarData = [
         link: "/settings/general",
         usersAllowed: ["resturant"],
       },
-      {
-        title: "Admin Commissions",
-        link: "/settings/admincommissions",
-        usersAllowed: ["admin", "super-admin"],
-      },
+      // {
+      //   title: "Admin Commissions",
+      //   link: "/settings/admincommissions",
+      //   usersAllowed: ["admin", "super-admin"],
+      // },
       {
         title: "Admin settings",
         link: "/settings/adminsettings",

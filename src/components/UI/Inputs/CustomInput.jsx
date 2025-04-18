@@ -9,6 +9,7 @@ const CustomInput = ({
   type = "text",
   placeholder = "Enter Value Here",
   error,
+  id,
 }) => {
   return (
     <div className="w-full">
