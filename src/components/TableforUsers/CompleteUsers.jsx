@@ -63,7 +63,6 @@ function CompleteUsers({ users }) {
           <Table.HeadCell>Phone</Table.HeadCell>
 
           <Table.HeadCell>Date</Table.HeadCell>
-          <Table.HeadCell>Active</Table.HeadCell>
           <Table.HeadCell>TotalRides</Table.HeadCell>
           <Table.HeadCell>Actions</Table.HeadCell>
         </Table.Head>
@@ -100,9 +99,7 @@ function CompleteUsers({ users }) {
                 <Table.Cell>
                   {new Date(value?.createdAt).toDateString()}
                 </Table.Cell>
-                <Table.Cell>
-                  <CustomSwitch />
-                </Table.Cell>
+
                 <Table.Cell>{value?.rides}</Table.Cell>
                 <Table.Cell>
                   <div className="flex justify-start items-center gap-3">

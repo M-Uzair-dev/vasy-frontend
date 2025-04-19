@@ -20,6 +20,7 @@ function Restaurants() {
     let getData = async () => {
       try {
         const res = await api.get("/restaurant/orders");
+        console.log(res);
         if ((res.status = 200)) {
           setRestaurants(res.data.restaurants);
           setOrders(res.data.orders);

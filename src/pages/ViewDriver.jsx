@@ -16,7 +16,9 @@ function ViewDriver() {
   const [open, setopen] = useState(false);
   const { id } = useParams();
 
-  const { apiCall, response, loading } = useApi("GET");
+  const { apiCall, response, loading } = useApi("GET", (data) => {
+    console.log("DRIVER RESPONSE", data);
+  });
 
   useEffect(() => {
     apiCall(`/driver/${id}`);

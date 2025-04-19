@@ -59,7 +59,6 @@ function Generaldetails({ restaurants }) {
           <Table.HeadCell>EMAIL ADDRESS</Table.HeadCell>
           <Table.HeadCell>PHONE NUMBER</Table.HeadCell>
           <Table.HeadCell>ADDRESS</Table.HeadCell>
-          <Table.HeadCell>AVAILABILITY</Table.HeadCell>
           <Table.HeadCell>ACTIONS</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y text-dark text-sm font-medium">
@@ -87,9 +86,9 @@ function Generaldetails({ restaurants }) {
                   <Table.Cell>{value.email}</Table.Cell>
                   <Table.Cell>{value.phoneNumber}</Table.Cell>
                   <Table.Cell>{value.address}</Table.Cell>
-                  <Table.Cell>
+                  {/* <Table.Cell>
                     <CustomSwitch />
-                  </Table.Cell>
+                  </Table.Cell> */}
                   <Table.Cell>
                     <div className="flex justify-start items-center gap-3">
                       <HiOutlineEye

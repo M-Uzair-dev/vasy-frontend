@@ -18,7 +18,12 @@ import { api } from "../api/useAxios";
 function ServicesRides() {
   const [open, setopen] = useState(false);
   const [switch2, setSwitch2] = useState(true);
-  const { apiCall, response, loading, error } = useApi("GET");
+  const { apiCall, response, loading, error } = useApi("GET", (data) => {
+    console.log(data);
+  });
+  const { apiCall: updateService } = useApi("PUT", (data) => {
+    console.log(data);
+  });
   const [deleting, setDeleting] = useState("");
   const [deleted, setDeleted] = useState([]);
   const nav = useNavigate();
@@ -57,6 +62,16 @@ function ServicesRides() {
   if (loading) {
     return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
   }
+  const toggle = async (key, value, id) => {
+    try {
+      updateService(`/services?id=${id}`, {
+        [key]: value,
+      });
+    } catch (error) {
+      toastMessage("Something went wrong !", "error");
+      console.log(error);
+    }
+  };
   return (
     <DashBoardLayout
       heading={"Services"}
@@ -118,10 +133,20 @@ function ServicesRides() {
                   <Table.Cell>{value.tax}%</Table.Cell>
                   <Table.Cell>
                     {" "}
-                    <CustomSwitch />
+                    <CustomSwitch
+                      isChecked={value?.biddingSystem}
+                      onChange={(e) => {
+                        toggle("biddingSystem", e, value._id);
+                      }}
+                    />
                   </Table.Cell>
                   <Table.Cell>
-                    <CustomSwitch />
+                    <CustomSwitch
+                      isChecked={value?.status}
+                      onChange={(e) => {
+                        toggle("status", e, value._id);
+                      }}
+                    />
                   </Table.Cell>
                   <Table.Cell>
                     <div className="flex justify-start items-center gap-3">
