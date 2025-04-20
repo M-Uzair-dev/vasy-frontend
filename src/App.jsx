@@ -18,10 +18,12 @@ import Restaurants from "./pages/Restaurants";
 import Rides from "./pages/Rides";
 import ViewDriver from "./pages/ViewDriver";
 import EditDriversdetails from "./pages/EditDriversdetails";
+import RestaurantCategoriescreate from "./pages/RestaurantCategoriescreate";
 import Userrep from "./pages/Userrep";
 import Ridereports from "./pages/Ridereports";
 import Transactionrep from "./pages/Transactionrep";
 import EditVehicledetails from "./pages/EditVehicledetails";
+import RestaurantCategoriesview from "./pages/RestaurantCategoriesview";
 import AddVehicleform from "./pages/AddVehicleform";
 import RulesEditDriver from "./pages/RulesEditDriver";
 import RulesCreateDriver from "./pages/RulesCreateDriver";
@@ -87,8 +89,18 @@ const appRoutes = [
     userType: ["resturant"],
   },
   {
-    path: "/categories/edit",
+    path: "/categories/edit/:id",
     element: <RestaurantCategoriesedit />,
+    userType: ["resturant"],
+  },
+  {
+    path: "/categories/view/:id",
+    element: <RestaurantCategoriesview />,
+    userType: ["resturant"],
+  },
+  {
+    path: "/categories/new",
+    element: <RestaurantCategoriescreate />,
     userType: ["resturant"],
   },
   {

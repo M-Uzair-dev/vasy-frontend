@@ -9,6 +9,7 @@ const CustomInput = ({
   type = "text",
   placeholder = "Enter Value Here",
   error,
+  disabled = false,
   id,
 }) => {
   return (
@@ -28,6 +29,7 @@ const CustomInput = ({
           onChange={onChange}
           className=" border border-[#EDF2F7] text-lightGray font-medium outline-none text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
           placeholder={placeholder}
+          disabled={disabled}
         />
       </div>
       {error && <div className="text-red-700 text-sm mt-1">{error}</div>}

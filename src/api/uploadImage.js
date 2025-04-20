@@ -14,6 +14,7 @@ const uploadFile = async (image, setUploading) => {
       }
     );
     let value = await answer.json();
+    console.log(value.url);
     return value.url;
   } catch (error) {
     console.log(error);

@@ -12,43 +12,37 @@ import { toastMessage } from "../components/UI/Toast/toastMessage";
 function RestaurantCategoriesedit() {
   const [selectedImages, setselectedImages] = useState([]);
   const nav = useNavigate();
-  const { id } = useParams();
   const [data, setData] = useState({
     name: "",
-    dishes: [],
+    dishes: [{ name: "", price: 1, image: "" }],
   });
+  const userID = localStorage.getItem("userId");
   const { apiCall: updateCategory, loading: updateLoading } = useApi(
-    "PUT",
+    "POST",
     (data) => {
       console.log(data);
     }
   );
-  const {
-    apiCall: loadCategory,
-    loading,
-    response,
-  } = useApi("GET", (data) => {
-    console.log(data);
-    setData({
-      name: data.category.name,
-      dishes: data.category.dishes,
-    });
-  });
-  useEffect(() => {
-    loadCategory(`/category?id=${id}`);
-  }, [id]);
 
   const handleUpdate = async () => {
-    const res = await updateCategory(`/category?id=${id}`, data);
-    if (res.status === 200) {
-      toastMessage("Category updated successfully", "success");
-      nav(-1);
+    if (userID) {
+      const res = await updateCategory(`/category`, {
+        ...data,
+        restaurantId: userID,
+      });
+      if (res.status === 201) {
+        toastMessage("Category created successfully", "success");
+        nav(-1);
+      } else {
+        toastMessage("Failed to create category", "error");
+      }
     } else {
-      toastMessage("Failed to update category", "error");
+      toastMessage("User not found", "error");
+      nav("/");
     }
   };
 
-  if (loading || updateLoading) {
+  if (updateLoading) {
     return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
   }
 

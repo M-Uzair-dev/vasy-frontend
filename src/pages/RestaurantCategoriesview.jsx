@@ -7,22 +7,16 @@ import ImageUploader from "../components/UI/Inputs/ImageInput";
 import CustomSelect from "../components/UI/Selects/CustomSelect";
 import useApi from "../api/useApi";
 import LoaderSpinner from "../components/UI/Loaders/LoaderSpinner";
-import { toastMessage } from "../components/UI/Toast/toastMessage";
 
 function RestaurantCategoriesedit() {
   const [selectedImages, setselectedImages] = useState([]);
+
   const nav = useNavigate();
   const { id } = useParams();
   const [data, setData] = useState({
     name: "",
     dishes: [],
   });
-  const { apiCall: updateCategory, loading: updateLoading } = useApi(
-    "PUT",
-    (data) => {
-      console.log(data);
-    }
-  );
   const {
     apiCall: loadCategory,
     loading,
@@ -38,17 +32,7 @@ function RestaurantCategoriesedit() {
     loadCategory(`/category?id=${id}`);
   }, [id]);
 
-  const handleUpdate = async () => {
-    const res = await updateCategory(`/category?id=${id}`, data);
-    if (res.status === 200) {
-      toastMessage("Category updated successfully", "success");
-      nav(-1);
-    } else {
-      toastMessage("Failed to update category", "error");
-    }
-  };
-
-  if (loading || updateLoading) {
+  if (loading) {
     return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
   }
 
@@ -60,6 +44,7 @@ function RestaurantCategoriesedit() {
             value={data.name}
             onChange={(e) => setData({ ...data, name: e.target.value })}
             label={"Category Name"}
+            disabled={true}
             placeholder=" Category name"
           />
         </div>
@@ -67,6 +52,7 @@ function RestaurantCategoriesedit() {
           <div className="flex justify-start gap-5 mr-96">
             <CustomInput
               value={dish.name}
+              disabled={true}
               onChange={(e) =>
                 setData((prev) => ({
                   ...prev,
@@ -80,6 +66,7 @@ function RestaurantCategoriesedit() {
             />
             <CustomInput
               value={dish.price}
+              disabled={true}
               onChange={(e) =>
                 setData((prev) => ({
                   ...prev,
@@ -88,7 +75,6 @@ function RestaurantCategoriesedit() {
                   ),
                 }))
               }
-              type="number"
               label={"Price"}
               placeholder="Price"
             />
@@ -105,33 +91,19 @@ function RestaurantCategoriesedit() {
               label={"Image"}
               maxImages={1}
               isRestaurant={true}
-            />
-            <Button
-              title="Remove"
-              style={{ height: "40px", marginTop: "22px" }}
-              onclick={() => {
-                setData((prev) => ({
-                  ...prev,
-                  dishes: prev.dishes.filter((_, i) => i !== index),
-                }));
-              }}
+              disabled={true}
             />
           </div>
         ))}
-        <Button
-          title="Add Dish"
-          style={{ height: "40px", marginTop: "22px", width: "max-content" }}
-          onclick={() => {
-            setData((prev) => ({
-              ...prev,
-              dishes: [...prev.dishes, { name: "", price: 1, image: "" }],
-            }));
-          }}
-        />
 
         <div className="flex gap-4 w-full h-full items-end justify-end">
           <Button title="Back" onclick={() => nav(-1)} outline />
-          <Button title="Save" onclick={handleUpdate} />
+          <Button
+            title="Save"
+            onclick={() => {
+              console.log(data);
+            }}
+          />
         </div>
       </form>
       <div className="mb-44"></div>
