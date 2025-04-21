@@ -19,9 +19,9 @@ function RestaurantSettings() {
   const { apiCall: getUser, loading } = useApi("GET", (data) => {
     console.log(data);
     setUser({
-      name: data.name,
+      fullName: data.fullName,
       email: data.email,
-      phone: data.phone,
+      phoneNumber: data.phoneNumber,
       logo: data.image,
       cover: data.cover,
     });
@@ -29,9 +29,9 @@ function RestaurantSettings() {
     setselectedImages2(data.cover ? [data.cover] : []);
   });
   const [user, setUser] = useState({
-    name: "",
+    fullName: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     password: "",
     newPassword: "",
     confirmPassword: "",
@@ -66,9 +66,9 @@ function RestaurantSettings() {
     setUser(updatedUser);
 
     const response = await updateUser(`/auth/update-user`, {
-      name: updatedUser.name,
+      fullName: updatedUser.fullName,
       email: updatedUser.email,
-      phone: updatedUser.phone,
+      phoneNumber: updatedUser.phoneNumber,
       password: updatedUser.password,
       newPassword: updatedUser.newPassword,
       confirmPassword: updatedUser.confirmPassword,
@@ -76,6 +76,11 @@ function RestaurantSettings() {
       cover: updatedUser.cover,
     });
     if (response?.status === 200) {
+      // Update localStorage
+      localStorage.setItem("name", updatedUser.fullName);
+      localStorage.setItem("email", updatedUser.email);
+      // Dispatch custom event
+      window.dispatchEvent(new Event("localStorageUpdated"));
       toastMessage("User details updated successfully", "success");
     } else if (response?.status === 202) {
       toastMessage(response.message || "Wrong Password !", "error");
@@ -92,8 +97,8 @@ function RestaurantSettings() {
         <form action="" className="flex flex-col gap-16 h-[60vh]">
           <div className="flex justify-start gap-5">
             <CustomInput
-              value={user.name}
-              onChange={(e) => setUser({ ...user, name: e.target.value })}
+              value={user.fullName}
+              onChange={(e) => setUser({ ...user, fullName: e.target.value })}
               label={"Name"}
               placeholder="Enter Name"
             />
@@ -104,8 +109,10 @@ function RestaurantSettings() {
               placeholder="Enter Email"
             />
             <CustomInput
-              value={user.phone}
-              onChange={(e) => setUser({ ...user, phone: e.target.value })}
+              value={user.phoneNumber}
+              onChange={(e) =>
+                setUser({ ...user, phoneNumber: e.target.value })
+              }
               label={"Phone"}
               placeholder="Enter Phone"
             />

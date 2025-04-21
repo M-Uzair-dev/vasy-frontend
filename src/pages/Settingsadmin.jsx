@@ -48,6 +48,9 @@ function Settingsadmin() {
       const response = await updateUser("/auth/update-user", formData);
       if (response) {
         toastMessage("Profile updated successfully", "success");
+        localStorage.setItem("name", formData.name);
+        localStorage.setItem("email", formData.email);
+        window.dispatchEvent(new Event("localStorageUpdated"));
         setFormData((prev) => ({
           ...prev,
           password: "",

@@ -37,19 +37,19 @@ function Maindiv() {
         <GLobalContent
           heading={"Total Rides"}
           amount={response?.data?.totalRides || 0}
-          bottom={"Bottom text"}
+          bottom={""}
           Icon={rides1}
         />
         <GLobalContent
           heading={"Total users"}
           amount={response?.data?.totalClients || 0}
-          bottom={"Bottom text"}
+          bottom={""}
           Icon={rides2}
         />
         <GLobalContent
           heading={"Total Drivers"}
           amount={response?.data?.totalDrivers || 0}
-          bottom={"Bottom text"}
+          bottom={""}
           Icon={rides3}
         />
       </div>
@@ -59,19 +59,19 @@ function Maindiv() {
         <GLobalContent
           heading={"Ride Placed"}
           amount={response?.data?.placedRides || 0}
-          bottom={"bottom text"}
+          bottom={""}
           Icon={riders1}
         />
         <GLobalContent
           heading={"Ride Active"}
           amount={response?.data?.activeRides || 0}
-          bottom={"bottom text"}
+          bottom={""}
           Icon={riders2}
         />
         <GLobalContent
           heading={"Ride Cancelled"}
           amount={response?.data?.cancelledRides || 0}
-          bottom={"bottom text"}
+          bottom={""}
           Icon={riders3}
         />
       </div>
@@ -81,19 +81,16 @@ function Maindiv() {
         <GLobalContent
           heading={"Total Earnings"}
           amount={response?.data?.totalAmount || 0}
-          bottom={"Bottom text"}
           Icon={sales1}
         />
         <GLobalContent
           heading={"Total Admin commission"}
           amount={response?.data?.adminCommission || 0}
-          bottom={"Bottom text"}
           Icon={sales2}
         />
         <GLobalContent
           heading={"Drivers Payout"}
           amount={response?.data?.payouts?.length || 0}
-          bottom={"Bottom text"}
           Icon={sales3}
         />
       </div>

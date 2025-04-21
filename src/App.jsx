@@ -65,6 +65,7 @@ import RestaurantSettings from "./pages/RestaurantSettings";
 import RestaurantloginPayout from "./pages/RestaurantloginPayout";
 import Restaurantloginpayoutdetails from "./pages/Restaurantloginpayoutdetails";
 import Restaurantloginpayoutnewrequest from "./pages/Restaurantloginpayoutnewrequest";
+import UpdateValues from "./UpdateValues";
 const appRoutes = [
   {
     path: "/",
@@ -338,23 +339,25 @@ function App() {
   console.log(import.meta.env.MODE);
   return (
     <Routes>
-      <Route path="/" element={<RootLayout />}>
-        <Route path="*" element={<Navigate to={"/"} />} />
-        {appRoutes.map(({ path, element, userType }, index) => (
-          <Route
-            key={index}
-            path={path}
-            element={<RouteProtector element={element} userType={userType} />}
-          />
-        ))}{" "}
+      <Route path="/" element={<UpdateValues />}>
+        <Route path="/" element={<RootLayout />}>
+          <Route path="*" element={<Navigate to={"/"} />} />
+          {appRoutes.map(({ path, element, userType }, index) => (
+            <Route
+              key={index}
+              path={path}
+              element={<RouteProtector element={element} userType={userType} />}
+            />
+          ))}{" "}
+        </Route>
+        <Route path="/superadmin-login" element={<SuperAdminlogin />} />
+        <Route path="/admin-login" element={<LoginAdmin />} />
+        <Route path="/resturant-login" element={<Restaurantlogin />} />
+        <Route path="/agent-login" element={<AgentLogin />} />
+        <Route path="/forgot-password" element={<LoginForget />} />
+        <Route path="/password-success" element={<LoginPasswordSuccess />} />
+        <Route path="/password-recover" element={<LoginRecovery />} />
       </Route>
-      <Route path="/superadmin-login" element={<SuperAdminlogin />} />
-      <Route path="/admin-login" element={<LoginAdmin />} />
-      <Route path="/resturant-login" element={<Restaurantlogin />} />
-      <Route path="/agent-login" element={<AgentLogin />} />
-      <Route path="/forgot-password" element={<LoginForget />} />
-      <Route path="/password-success" element={<LoginPasswordSuccess />} />
-      <Route path="/password-recover" element={<LoginRecovery />} />
     </Routes>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Search from "../Search/Search";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoBasketballOutline } from "react-icons/io5";
@@ -7,6 +7,26 @@ import LanguageModal from "../UI/Modals/LanguageModal";
 const NavBar = () => {
   const [open, setopen] = useState(false);
   const [open1, setopen1] = useState(false);
+  const [name, setname] = useState("");
+  const [email, setemail] = useState("");
+
+  useEffect(() => {
+    const updateFromStorage = () => {
+      setname(localStorage.getItem("name"));
+      setemail(localStorage.getItem("email"));
+    };
+
+    // Set initial values
+    updateFromStorage();
+
+    // Add event listener for localStorage updates
+    window.addEventListener("localStorageUpdated", updateFromStorage);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("localStorageUpdated", updateFromStorage);
+    };
+  }, []);
   return (
     <>
       {open && <Logout openModal={open} setOpenModal={setopen} />}
@@ -34,11 +54,9 @@ const NavBar = () => {
           >
             <div className="flex flex-col items-end gap-1">
               <span className="text-base font-semibold ">
-                {localStorage.getItem("name") || "No Name Found"}
+                {name || "No Name Found"}
               </span>
-              <span className="text-sm">
-                {localStorage.getItem("email") || "no email found"}
-              </span>
+              <span className="text-sm">{email || "no email found"}</span>
             </div>
             <MdKeyboardArrowDown className="w-5 h-5" />
           </div>
