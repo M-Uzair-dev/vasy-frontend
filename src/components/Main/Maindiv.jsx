@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import GLobalContent from "./GLobalContent";
-import graph from "../../assets/graph.png";
-import chart from "../../assets/chart.svg";
 import { Members, Riders, Sales } from "../../data/routes";
 import DashBoardLayout from "../../layout/DashBoardLayout";
 import {
@@ -17,6 +15,15 @@ import {
 } from "../UI/Icons";
 import useApi from "../../api/useApi";
 import LoaderSpinner from "../UI/Loaders/LoaderSpinner";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 function Maindiv() {
   const { apiCall, response, loading } = useApi("GET", (data) =>
@@ -26,6 +33,26 @@ function Maindiv() {
   useEffect(() => {
     apiCall("/auth/dashboard");
   }, []);
+
+  // Transform monthlyOrders data into array format for the chart
+  const chartData = response?.data?.monthlyOrders
+    ? Object.entries(response.data.monthlyOrders)
+        .map(([month, count]) => {
+          const [monthName, year] = month.split(" ");
+          const shortMonth = monthName.substring(0, 3);
+          const shortYear = year.substring(2);
+          return {
+            month: `${shortMonth}, ${shortYear}`,
+            orders: count,
+          };
+        })
+        .sort((a, b) => {
+          // Sort by date
+          const dateA = new Date(a.month);
+          const dateB = new Date(b.month);
+          return dateA - dateB;
+        })
+    : [];
 
   if (loading) {
     return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
@@ -95,16 +122,49 @@ function Maindiv() {
         />
       </div>
 
-      <div className=" py-10">
+      <div className="py-10">
         <h1 className="text-secondary text-2xl font-bold my-9">
-          Monthly Sales
+          Monthly Orders
         </h1>
 
-        <img
-          src={chart}
-          alt=""
-          className="w-full border-2 rounded-xl  object-cover"
-        />
+        <div className="w-full h-[400px] border-2 rounded-xl p-4">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={chartData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="month"
+                tick={{ fill: "#666" }}
+                angle={-45}
+                textAnchor="end"
+                height={60}
+              />
+              <YAxis tick={{ fill: "#666" }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #ddd",
+                  borderRadius: "4px",
+                }}
+              />
+              <Line
+                type="monotone"
+                dataKey="orders"
+                stroke="#8884d8"
+                strokeWidth={2}
+                dot={{ r: 4 }}
+                activeDot={{ r: 8 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </DashBoardLayout>
   );

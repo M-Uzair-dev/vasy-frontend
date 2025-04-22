@@ -5,7 +5,13 @@ import { useNavigate } from "react-router-dom";
 export default function MessageSideBar({ data }) {
   const nav = useNavigate();
   return (
-    <div id="sidebar-items" className="basis-3/12 overflow-y-auto">
+    <div
+      id="sidebar-items"
+      style={{
+        minWidth: "max-content",
+      }}
+      className="basis-3/12 overflow-y-auto"
+    >
       <div className="text-secondary flex items-center gap-2 p-6 font-bold text-xl">
         Inbox
       </div>

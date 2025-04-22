@@ -19,7 +19,9 @@ function Payouttable() {
   const [bank, setBank] = useState({});
   const [accepted, setAccepted] = useState([]);
   const [rejected, setRejected] = useState([]);
-  const { apiCall, response, loading } = useApi("GET");
+  const { apiCall, response, loading } = useApi("GET", (data) => {
+    console.log(data);
+  });
   function formatDate(isoDateString) {
     const date = new Date(isoDateString);
     const monthNames = [
@@ -124,7 +126,10 @@ function Payouttable() {
                     </Table.Cell>
                     <Table.Cell>{value?.client?.userType}</Table.Cell>
                     <Table.Cell>
-                      {value?.client.firstName + " " + value?.client.lastName}
+                      {value?.client?.fullName ||
+                        value?.client?.firstName +
+                          " " +
+                          value?.client?.lastName}
                     </Table.Cell>
                     <Table.Cell>{value?.amount}</Table.Cell>
                     <Table.Cell>{formatDate(value?.createdAt)}</Table.Cell>{" "}

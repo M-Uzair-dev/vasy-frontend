@@ -26,6 +26,9 @@ export default function MessageRow({ name, message, image, date, onClick }) {
     <div
       className="flex cursor-pointer hover:bg-main/20 px-4 py-2 rounded-xl justify-between hover:scale-105 duration-200"
       onClick={onClick}
+      style={{
+        minWidth: "270px",
+      }}
     >
       <div className="flex gap-x-2">
         <img

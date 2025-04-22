@@ -18,7 +18,9 @@ function RideOrders() {
   const [open, setopen] = useState(false);
   const [deleting, setDeleting] = useState("");
   const [deleted, setDeleted] = useState([]);
-  const { apiCall, response, loading } = useApi("GET");
+  const { apiCall, response, loading } = useApi("GET", (data) =>
+    console.log(data)
+  );
   const nav = useNavigate();
 
   useEffect(() => {

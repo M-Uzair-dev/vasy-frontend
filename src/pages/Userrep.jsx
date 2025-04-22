@@ -29,7 +29,7 @@ function Userrep() {
       let workSheet = XLSX.utils.json_to_sheet(updatedData);
       let wbBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wbBook, workSheet, "Users");
-      XLSX.writeFile(wbBook, `${name}.xlsx`);
+      XLSX.writeFile(wbBook, `${name || "users"}.xlsx`);
     } catch (e) {
       toastMessage("Something went wrong !", "error");
     }

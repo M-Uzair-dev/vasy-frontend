@@ -7,12 +7,12 @@ const UpdateValues = () => {
   const { apiCall: user, loading } = useApi("GET", (data) => {
     localStorage.setItem(
       "name",
-      data.fullName ||
-        data.name ||
-        data.firstName + data.lastName ||
+      data?.fullName ||
+        data?.name ||
+        data?.firstName + data?.lastName ||
         "undefined"
     );
-    localStorage.setItem("email", data.email || "undefined");
+    localStorage.setItem("email", data?.email || "undefined");
   });
   useEffect(() => {
     user(`/auth/user-details`);
