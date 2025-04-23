@@ -15,6 +15,8 @@ import LoaderSpinner from "../UI/Loaders/LoaderSpinner";
 import PaginationRow from "../UI/Pagination/PaginationRow";
 import { toastMessage } from "../UI/Toast/toastMessage";
 import { api } from "../../api/useAxios";
+import DocumentsModal from "../UI/DocumentsModal";
+
 function Generaldetails({ approved, pending }) {
   const [open, setopen] = useState(false);
   const [page, setPage] = useState(1);
@@ -25,6 +27,8 @@ function Generaldetails({ approved, pending }) {
   const [deleting, setDeleting] = useState("");
   const [deleted, setDeleted] = useState([]);
   const nav = useNavigate();
+  const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
+  const [selectedDriverDocuments, setSelectedDriverDocuments] = useState(null);
 
   useEffect(() => {
     if (approved) {
@@ -73,6 +77,22 @@ function Generaldetails({ approved, pending }) {
       months[date.getUTCMonth()]
     },${date.getUTCDate()},${date.getUTCFullYear()}`;
   }
+
+  const handleDocumentClick = (driver) => {
+    // The documents are nested inside driver.documents
+    const documentsData = driver.documents || {};
+
+    const driverDocuments = {
+      idCardFront: documentsData.idCardFront || null,
+      idCardBack: documentsData.idCardBack || null,
+      drivingLicense: documentsData.drivingLicense || null,
+      vehicleInsurance: documentsData.vehicleInsurance || null,
+      vehiclePhotos: documentsData.vehiclePhotos || [],
+    };
+
+    setSelectedDriverDocuments(driverDocuments);
+    setIsDocumentModalOpen(true);
+  };
 
   if (loading) {
     return <LoaderSpinner style={{ minHeight: "80vh" }} spinnerScale={0.5} />;
@@ -124,7 +144,12 @@ function Generaldetails({ approved, pending }) {
                   <Table.Cell>{value?.email}</Table.Cell>
                   <Table.Cell>{value?.mobileNumber}</Table.Cell>
                   <Table.Cell>
-                    <img src={Documenticon} alt="" />
+                    <img
+                      src={Documenticon}
+                      alt="Documents"
+                      className="cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => handleDocumentClick(value)}
+                    />
                   </Table.Cell>
                   <Table.Cell>{formatDate(value?.createdAt)}</Table.Cell>
                   <Table.Cell>{value?.role}</Table.Cell>
@@ -166,6 +191,12 @@ function Generaldetails({ approved, pending }) {
         setDataPerPage={setDataPerPage}
         total={response?.data?.total}
         endMessage={"No More Drivers !"}
+      />
+
+      <DocumentsModal
+        isOpen={isDocumentModalOpen}
+        onClose={() => setIsDocumentModalOpen(false)}
+        documents={selectedDriverDocuments || {}}
       />
     </>
   );

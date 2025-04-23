@@ -33,7 +33,7 @@ const DashBoardLayout = ({
               className="px-7 py-1"
             />
           )}
-          {showSearch && <SearchInput onchange={onChange} />}
+          {false && <SearchInput onchange={onChange} />}
         </div>
       </div>
       <div className="mt-9"></div>
